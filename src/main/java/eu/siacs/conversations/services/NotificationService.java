@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -1193,7 +1194,7 @@ public class NotificationService {
                 final String lastMessageUuid = Iterables.getLast(messages).getUuid();
                 final NotificationCompat.Action replyAction =
                         new NotificationCompat.Action.Builder(
-                                        R.drawable.ic_send_text_offline,
+                                        R.drawable.ic_send_text_online,
                                         replyLabel,
                                         createReplyIntent(conversation, lastMessageUuid, false))
                                 .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)

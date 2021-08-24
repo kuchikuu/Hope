@@ -2894,7 +2894,7 @@ public class ConversationFragment extends XmppFragment
         this.binding.textSendButton.setTag(action);
         final Activity activity = getActivity();
         if (activity != null) {
-            this.binding.textSendButton.setImageResource(
+            this.binding.textSendButton.setImageDrawable(
                     SendButtonTool.getSendButtonImageResource(activity, action, status));
         }
     }
