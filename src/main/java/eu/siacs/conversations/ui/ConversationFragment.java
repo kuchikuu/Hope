@@ -66,14 +66,18 @@ import com.google.common.collect.ImmutableList;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -112,6 +116,7 @@ import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.MucDetailsContextMenuHelper;
 import eu.siacs.conversations.ui.util.PendingItem;
 import eu.siacs.conversations.ui.util.PresenceSelector;
+import eu.siacs.conversations.ui.util.QuoteHelper;
 import eu.siacs.conversations.ui.util.ScrollState;
 import eu.siacs.conversations.ui.util.SendButtonAction;
 import eu.siacs.conversations.ui.util.SendButtonTool;
@@ -122,6 +127,7 @@ import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.GeoHelper;
 import eu.siacs.conversations.utils.MessageUtils;
+import eu.siacs.conversations.utils.MimeUtils;
 import eu.siacs.conversations.utils.NickValidityChecker;
 import eu.siacs.conversations.utils.Patterns;
 import eu.siacs.conversations.utils.PermissionUtils;
@@ -1259,8 +1265,32 @@ public class ConversationFragment extends XmppFragment
         }
     }
 
+    private void quoteMedia(Message message) {
+        String text =
+                MimeUtils.getMimeTypeEmoji(getActivity(), message.getMimeType())
+                + " _"
+                + UIHelper.readableTimeDifference(getActivity(), message.getTimeSent(), true, true)
+                + "_";
+        quoteText(text);
+    }
+
+    private void quoteGeoUri(Message message) {
+        String text =
+                "\uD83D\uDCCD" // globe with meridians emoji
+                + " _"
+                + UIHelper.readableTimeDifference(getActivity(), message.getTimeSent(), true, true)
+                + "_";
+        quoteText(text);
+    }
+
     private void quoteMessage(Message message) {
-        quoteText(MessageUtils.prepareQuote(message));
+        if (message.isGeoUri()) {
+            quoteGeoUri(message);
+        } else if (message.isFileOrImage()) {
+            quoteMedia(message);
+        } else if (message.isTypeText()) {
+            quoteText(MessageUtils.prepareQuote(message));
+        }
     }
 
     @Override
@@ -1331,7 +1361,6 @@ public class ConversationFragment extends XmppFragment
                     && !unInitiatedButKnownSize
                     && t == null) {
                 copyMessage.setVisible(true);
-                quoteMessage.setVisible(!showError && MessageUtils.prepareQuote(m).length() > 0);
                 String body = m.getMergedBody().toString();
                 if (ShareUtil.containsXmppUri(body)) {
                     copyLink.setTitle(R.string.copy_jabber_id);
@@ -1339,6 +1368,9 @@ public class ConversationFragment extends XmppFragment
                 } else if (Patterns.AUTOLINK_WEB_URL.matcher(body).find()) {
                     copyLink.setVisible(true);
                 }
+            }
+            if (!encrypted && !unInitiatedButKnownSize && t == null) {
+                quoteMessage.setVisible(!showError && QuoteHelper.isMessageQuoteable(m));
             }
             if (m.getEncryption() == Message.ENCRYPTION_DECRYPTION_FAILED && !deleted) {
                 retryDecryption.setVisible(true);

@@ -647,31 +647,33 @@ public final class MimeUtils {
         }
     }
 
-    public static String getLocalisedMimeType(Context context, String mime){
-        int lm;
+    public static String getMimeTypeEmoji(Context context, String mime){
+        String lm;
         if (mime == null) {
-            lm = R.string.unknown;
+            lm = context.getString(R.string.unknown);
         } else if (mime.startsWith("audio/")) {
-            lm = R.string.audio;
+            lm = "\uD83C\uDF99"; // studio microphone emoji
         } else if (mime.equals("text/calendar") || (mime.equals("text/x-vcalendar"))) {
-            lm = R.string.calendar_item;
+            lm = "\uD83D\uDCC6"; // tear-off calendar emoji
         } else if (mime.equals("text/x-vcard")) {
-            lm = R.string.contact;
+            lm = "\uD83D\uDC64"; // silhouette emoji
         } else if (mime.equals("application/vnd.android.package-archive")) {
-            lm = R.string.app;
+            lm = "\uD83D\uDCF1"; // cell phone emoji
         } else if (mime.equals("application/zip") || mime.equals("application/rar")) {
-            lm = R.string.archive;
+            lm = "\uD83D\uDDC4️"; // filing cabinet emoji
         } else if (mime.equals("application/epub+zip") || mime.equals("application/vnd.amazon.mobi8-ebook")) {
-            lm = R.string.ebook;
+            lm = "\uD83D\uDCD6"; // open book emoji
         } else if (mime.equals(ExportBackupService.MIME_TYPE)) {
-            lm = R.string.backup;
+            lm = "\uD83D\uDCBE"; // diskette emoji
         } else if (DOCUMENT_MIMES.contains(mime)) {
-            lm = R.string.document;
+            lm = "\uD83D\uDCC4"; // page emoji
         } else if (mime.startsWith("image/")) {
-            lm = R.string.image;
+            lm = "\uD83D\uDDBC️"; // painting emoji
+        } else if (mime.startsWith("video/")) {
+            lm = "\uD83C\uDFAC"; // clapper board emoji
         } else {
-            lm = R.string.file;
+            lm = "\uD83D\uDCC4"; // page emoji
         }
-        return context.getString(lm).substring(0, 1).toUpperCase() + context.getString(lm).substring(1).toLowerCase();
+        return lm;
     }
 }
