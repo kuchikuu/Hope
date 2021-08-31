@@ -28,12 +28,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import eu.siacs.conversations.Config;
+import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Transferable;
 import eu.siacs.conversations.services.ExportBackupService;
 
@@ -413,6 +415,16 @@ public final class MimeUtils {
         applyOverrides();
     }
 
+    private static final List<String> DOCUMENT_MIMES = Arrays.asList(
+            "application/pdf",
+            "application/vnd.oasis.opendocument.text",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "text/x-tex",
+            "text/plain"
+    );
+
+
     private static void add(String mimeType, String extension) {
         // If we have an existing x -> y mapping, we do not want to
         // override it with another mapping x -> y2.
@@ -633,5 +645,33 @@ public final class MimeUtils {
         } else {
             return input;
         }
+    }
+
+    public static String getLocalisedMimeType(Context context, String mime){
+        int lm;
+        if (mime == null) {
+            lm = R.string.unknown;
+        } else if (mime.startsWith("audio/")) {
+            lm = R.string.audio;
+        } else if (mime.equals("text/calendar") || (mime.equals("text/x-vcalendar"))) {
+            lm = R.string.calendar_item;
+        } else if (mime.equals("text/x-vcard")) {
+            lm = R.string.contact;
+        } else if (mime.equals("application/vnd.android.package-archive")) {
+            lm = R.string.app;
+        } else if (mime.equals("application/zip") || mime.equals("application/rar")) {
+            lm = R.string.archive;
+        } else if (mime.equals("application/epub+zip") || mime.equals("application/vnd.amazon.mobi8-ebook")) {
+            lm = R.string.ebook;
+        } else if (mime.equals(ExportBackupService.MIME_TYPE)) {
+            lm = R.string.backup;
+        } else if (DOCUMENT_MIMES.contains(mime)) {
+            lm = R.string.document;
+        } else if (mime.startsWith("image/")) {
+            lm = R.string.image;
+        } else {
+            lm = R.string.file;
+        }
+        return context.getString(lm).substring(0, 1).toUpperCase() + context.getString(lm).substring(1).toLowerCase();
     }
 }
