@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -67,7 +68,10 @@ public class PickServerActivity extends XmppActivity {
         super.onCreate(savedInstanceState);
         ActivityPickServerBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_pick_server);
         setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         binding.useCim.setOnClickListener(v -> {
             final Intent intent = new Intent(this, MagicCreateActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

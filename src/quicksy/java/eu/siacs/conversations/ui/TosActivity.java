@@ -51,6 +51,10 @@ public class TosActivity extends XmppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tos);
         setSupportActionBar(findViewById(R.id.toolbar));
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayShowHomeEnabled(false);

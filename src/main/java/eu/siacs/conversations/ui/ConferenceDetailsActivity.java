@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 
@@ -170,7 +171,10 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_muc_details);
         this.binding.changeConferenceButton.setOnClickListener(this.mChangeConferenceSettings);
         setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.binding.editNickButton.setOnClickListener(v -> quickEdit(mConversation.getMucOptions().getActualNick(),
                 R.string.nickname,
                 value -> {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.text.Spannable;
@@ -29,7 +30,6 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.common.base.Strings;
 
@@ -55,6 +55,7 @@ import eu.siacs.conversations.services.MessageArchiveService;
 import eu.siacs.conversations.services.NotificationService;
 import eu.siacs.conversations.ui.ConversationFragment;
 import eu.siacs.conversations.ui.ConversationsActivity;
+import eu.siacs.conversations.ui.Theme;
 import eu.siacs.conversations.ui.XmppActivity;
 import eu.siacs.conversations.ui.service.AudioPlayer;
 import eu.siacs.conversations.ui.text.DividerSpan;
@@ -164,7 +165,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
     }
 
-    private void displayStatus(ViewHolder viewHolder, Message message, int type, boolean coloredBackground) {
+    private void displayStatus(ViewHolder viewHolder, Message message, int type) {
         String filesize = null;
         String info = null;
         boolean error = false;
@@ -175,8 +176,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         if (viewHolder.edit_indicator != null) {
             if (message.edited()) {
                 viewHolder.edit_indicator.setVisibility(View.VISIBLE);
-                viewHolder.edit_indicator.setImageDrawable(getTintedMessageIcon(R.attr.ic_mode_edit, coloredBackground));
-                viewHolder.edit_indicator.setAlpha(activity.getThemeResourceAttr(R.attr.message_indicator_alpha).getFloat());
+                viewHolder.edit_indicator.setImageDrawable(Theme.getEditedMessageIcon(activity, message));
+                viewHolder.edit_indicator.setAlpha(Theme.getMessageIconsAlpha(activity));
             } else {
                 viewHolder.edit_indicator.setVisibility(View.GONE);
             }
@@ -207,8 +208,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 break;
             case Message.STATUS_SEND_RECEIVED:
             case Message.STATUS_SEND_DISPLAYED:
-                viewHolder.indicatorReceived.setImageDrawable(getTintedMessageIcon(R.attr.ic_done, coloredBackground));
-                viewHolder.indicatorReceived.setAlpha(activity.getThemeResourceAttr(R.attr.message_indicator_alpha).getFloat());
+                viewHolder.indicatorReceived.setImageDrawable(Theme.getDoneMessageIcon(activity, message));
+                viewHolder.indicatorReceived.setAlpha(Theme.getMessageIconsAlpha(activity));
                 viewHolder.indicatorReceived.setVisibility(View.VISIBLE);
                 break;
             case Message.STATUS_SEND_FAILED:
@@ -241,18 +242,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 break;
         }
         if (error && type == SENT) {
-            if (coloredBackground) {
-                viewHolder.time.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Caption_Warning_OnDark);
-            } else {
-                viewHolder.time.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Caption_Warning);
-            }
+            viewHolder.time.setTextAppearance(getContext(), Theme.getWarningCaptionTextAppearance(activity, message));
         } else {
-            if (coloredBackground) {
-                viewHolder.time.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Caption_OnDark);
-            } else {
-                viewHolder.time.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Caption);
-            }
-            viewHolder.time.setTextColor(this.getMessageTextColor(coloredBackground, false));
+            viewHolder.time.setTextAppearance(getContext(), Theme.getCaptionTextAppearance(activity, message));
+            viewHolder.time.setTextColor(Theme.getMessageStatusTextColor(activity, message));
         }
         if (message.getEncryption() == Message.ENCRYPTION_NONE) {
             viewHolder.indicator.setVisibility(View.GONE);
@@ -267,12 +260,12 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 }
             }
             if (verified) {
-                viewHolder.indicator.setImageDrawable(getTintedMessageIcon(R.attr.ic_verified_user, coloredBackground));
+                viewHolder.indicator.setImageDrawable(Theme.getUserVerifiedMessageIcon(activity, message));
             } else {
-                viewHolder.indicator.setImageDrawable(getTintedMessageIcon(R.attr.ic_lock, coloredBackground));
+                viewHolder.indicator.setImageDrawable(Theme.getUserUnverifiedMessageIcon(activity, message));
             }
 
-            viewHolder.indicator.setAlpha(activity.getThemeResourceAttr(R.attr.message_indicator_alpha).getFloat());
+            viewHolder.indicator.setAlpha(Theme.getMessageIconsAlpha(activity));
             viewHolder.indicator.setVisibility(View.VISIBLE);
         }
 
@@ -306,37 +299,30 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
     }
 
-    private void displayInfoMessage(ViewHolder viewHolder, CharSequence text, boolean darkBackground) {
+    private void displayInfoMessage(ViewHolder viewHolder, CharSequence text, Message message) {
         viewHolder.download_button.setVisibility(View.GONE);
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.messageBody.setVisibility(View.VISIBLE);
         viewHolder.messageBody.setText(text);
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary_OnDark);
-        } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary);
-        }
+        viewHolder.messageBody.setTextAppearance(getContext(), Theme.getMessageBodySecondaryTextAppearance(activity, message));
         viewHolder.messageBody.setTextIsSelectable(false);
     }
 
-    private void displayEmojiMessage(final ViewHolder viewHolder, final String body, final boolean darkBackground) {
+    private void displayEmojiMessage(final ViewHolder viewHolder, final String body, Message message) {
         viewHolder.download_button.setVisibility(View.GONE);
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.messageBody.setVisibility(View.VISIBLE);
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji_OnDark);
-        } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji);
-        }
+        viewHolder.messageBody.setTextAppearance(getContext(), Theme.getMessageEmojiBodyTextAppearance(activity, message));
+
         Spannable span = new SpannableString(body);
         float size = Emoticons.isEmoji(body) ? 3.0f : 2.0f;
         span.setSpan(new RelativeSizeSpan(size), 0, body.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewHolder.messageBody.setText(span);
     }
 
-    private void applyQuoteSpan(SpannableStringBuilder body, int start, int end, boolean darkBackground) {
+    private void applyQuoteSpan(SpannableStringBuilder body, int start, int end, Message message) {
         if (start > 1 && !"\n\n".equals(body.subSequence(start - 2, start).toString())) {
             body.insert(start++, "\n");
             body.setSpan(new DividerSpan(false), start - 2, start, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -346,7 +332,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             body.insert(end, "\n");
             body.setSpan(new DividerSpan(false), end, end + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        int color = ContextCompat.getColor(activity, darkBackground ? activity.getThemeResource(R.attr.quote_text_color_on_colored) : activity.getThemeResource(R.attr.quote_text_color));
+        int color = Theme.getMessageQuoteTextColor(activity, message);
         DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
         body.setSpan(new QuoteSpan(color, metrics), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
@@ -355,7 +341,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
      * Applies QuoteSpan to group of lines which starts with > or » characters.
      * Appends likebreaks and applies DividerSpan to them to show a padding between quote and text.
      */
-    private boolean handleTextQuotes(SpannableStringBuilder body, boolean coloredBackground) {
+    private boolean handleTextQuotes(SpannableStringBuilder body, Message message) {
         boolean startsWithQuote = false;
         int quoteDepth = 1;
         while (QuoteHelper.bodyContainsQuoteStart(body) && quoteDepth <= Config.QUOTE_MAX_DEPTH) {
@@ -374,7 +360,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                             if (i == 0) startsWithQuote = true;
                         } else if (quoteStart >= 0) {
                             // Line start without quote, apply spans there
-                            applyQuoteSpan(body, quoteStart, i - 1, coloredBackground);
+                            applyQuoteSpan(body, quoteStart, i - 1, message);
                             quoteStart = -1;
                         }
                     }
@@ -399,28 +385,27 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             }
             if (quoteStart >= 0) {
                 // Apply spans to finishing open quote
-                applyQuoteSpan(body, quoteStart, body.length(), coloredBackground);
+                applyQuoteSpan(body, quoteStart, body.length(), message);
             }
             quoteDepth++;
         }
         return startsWithQuote;
     }
 
-    private void displayTextMessage(final ViewHolder viewHolder, final Message message, boolean darkBackground, int type) {
+    private void displayTextMessage(final ViewHolder viewHolder, final Message message, int type) {
         viewHolder.download_button.setVisibility(View.GONE);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.messageBody.setVisibility(View.VISIBLE);
 
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_OnDark);
+        viewHolder.messageBody.setTextAppearance(getContext(), Theme.getMessageBodyTextAppearance(activity, message));
+
+        if (type == SENT){
+            viewHolder.messageBody.setHighlightColor(Theme.getSentMessageHighlightColor(activity));
         } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1);
+            viewHolder.messageBody.setHighlightColor(Theme.getReceivedMessageHighlightColor(activity, message));
         }
-        viewHolder.messageBody.setHighlightColor(ContextCompat.getColor(activity, darkBackground
-                ? (type == SENT || !mUseColoredBackground ? activity.getThemeResource(R.attr.message_highlight_color_sent)
-                    : activity.getThemeResource(R.attr.message_highlight_color_received))
-                : activity.getThemeResource(R.attr.message_highlight_color_received_on_colored)));
+
         viewHolder.messageBody.setTypeface(null, Typeface.NORMAL);
 
         if (message.getBody() != null) {
@@ -440,10 +425,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 int end = body.getSpanEnd(mergeSeparator);
                 body.setSpan(new DividerSpan(true), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
-            boolean startsWithQuote = handleTextQuotes(body, darkBackground);
+            boolean startsWithQuote = handleTextQuotes(body, message);
             if (!message.isPrivateMessage()) {
                 if (hasMeCommand) {
-                    body.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, nick.length(),
+                    body.setSpan(Theme.getMessageBodyMeSpan(), 0, nick.length(),
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             } else {
@@ -463,10 +448,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 } else {
                     body.insert(privateMarkerIndex, " ");
                 }
-                body.setSpan(new ForegroundColorSpan(getMessageTextColor(darkBackground, false)), 0, privateMarkerIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                body.setSpan(new ForegroundColorSpan(Theme.getMessageTextColor(activity, message)), 0, privateMarkerIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 body.setSpan(new StyleSpan(Typeface.BOLD), 0, privateMarkerIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 if (hasMeCommand) {
-                    body.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), privateMarkerIndex + 1,
+                    body.setSpan(Theme.getMessageBodyMeSpan(), privateMarkerIndex + 1,
                             privateMarkerIndex + 1 + nick.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
@@ -476,7 +461,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     Pattern pattern = NotificationService.generateNickHighlightPattern(conversation.getMucOptions().getActualNick());
                     Matcher matcher = pattern.matcher(body);
                     while (matcher.find()) {
-                        body.setSpan(new StyleSpan(Typeface.BOLD), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        body.setSpan(Theme.getMessageHighlightSpan(), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                 }
             }
@@ -501,8 +486,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
     }
 
-    private void displayDownloadableMessage(ViewHolder viewHolder, final Message message, String text, final boolean darkBackground) {
-        toggleWhisperInfo(viewHolder, message, darkBackground);
+    private void displayDownloadableMessage(ViewHolder viewHolder, final Message message, String text) {
+        toggleWhisperInfo(viewHolder, message);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.download_button.setVisibility(View.VISIBLE);
@@ -510,8 +495,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.download_button.setOnClickListener(v -> ConversationFragment.downloadFile(activity, message));
     }
 
-    private void displayOpenableMessage(ViewHolder viewHolder, final Message message, final boolean darkBackground) {
-        toggleWhisperInfo(viewHolder, message, darkBackground);
+    private void displayOpenableMessage(ViewHolder viewHolder, final Message message) {
+        toggleWhisperInfo(viewHolder, message);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.download_button.setVisibility(View.VISIBLE);
@@ -519,8 +504,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.download_button.setOnClickListener(v -> openDownloadable(message));
     }
 
-    private void displayLocationMessage(ViewHolder viewHolder, final Message message, final boolean darkBackground) {
-        toggleWhisperInfo(viewHolder, message, darkBackground);
+    private void displayLocationMessage(ViewHolder viewHolder, final Message message) {
+        toggleWhisperInfo(viewHolder, message);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.download_button.setVisibility(View.VISIBLE);
@@ -528,18 +513,17 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.download_button.setOnClickListener(v -> showLocation(message));
     }
 
-    private void displayAudioMessage(ViewHolder viewHolder, Message message, boolean darkBackground) {
-        toggleWhisperInfo(viewHolder, message, darkBackground);
+    private void displayAudioMessage(ViewHolder viewHolder, Message message) {
+        toggleWhisperInfo(viewHolder, message);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.download_button.setVisibility(View.GONE);
         final RelativeLayout audioPlayer = viewHolder.audioPlayer;
         audioPlayer.setVisibility(View.VISIBLE);
-        AudioPlayer.ViewHolder.get(audioPlayer).setColoredBackground(darkBackground);
         this.audioPlayer.init(audioPlayer, message);
     }
 
-    private void displayMediaPreviewMessage(ViewHolder viewHolder, final Message message, final boolean darkBackground) {
-        toggleWhisperInfo(viewHolder, message, darkBackground);
+    private void displayMediaPreviewMessage(ViewHolder viewHolder, final Message message) {
+        toggleWhisperInfo(viewHolder, message);
         viewHolder.download_button.setVisibility(View.GONE);
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.image.setVisibility(View.VISIBLE);
@@ -567,7 +551,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.image.setOnClickListener(v -> openDownloadable(message));
     }
 
-    private void toggleWhisperInfo(ViewHolder viewHolder, final Message message, final boolean darkBackground) {
+    private void toggleWhisperInfo(ViewHolder viewHolder, final Message message) {
         if (message.isPrivateMessage()) {
             final String privateMarker;
             if (message.getStatus() <= Message.STATUS_RECEIVED) {
@@ -577,7 +561,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 privateMarker = activity.getString(R.string.private_message_to, Strings.nullToEmpty(cp == null ? null : cp.getResource()));
             }
             final SpannableString body = new SpannableString(privateMarker);
-            body.setSpan(new ForegroundColorSpan(getMessageTextColor(darkBackground, false)), 0, privateMarker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            body.setSpan(new ForegroundColorSpan(Theme.getMessageTextColor(activity, message)), 0, privateMarker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             body.setSpan(new StyleSpan(Typeface.BOLD), 0, privateMarker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             viewHolder.messageBody.setText(body);
             viewHolder.messageBody.setVisibility(View.VISIBLE);
@@ -602,10 +586,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         } else {
             Toast.makeText(activity, R.string.not_fetching_history_retention_period, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public Drawable getTintedMessageIcon(int drawableResource, boolean coloredBackground){
-        return activity.getTintedDrawable(drawableResource, R.attr.message_icons_tint, R.attr.message_icons_tint_on_colored, coloredBackground);
     }
 
     @Override
@@ -766,43 +746,43 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         final boolean unInitiatedButKnownSize = MessageUtils.unInitiatedButKnownSize(message);
         if (unInitiatedButKnownSize || message.isDeleted() || (transferable != null && transferable.getStatus() != Transferable.STATUS_UPLOADING)) {
             if (unInitiatedButKnownSize || transferable != null && transferable.getStatus() == Transferable.STATUS_OFFER) {
-                displayDownloadableMessage(viewHolder, message, activity.getString(R.string.download_x_file, UIHelper.getFileDescriptionString(activity, message)), coloredBackground);
+                displayDownloadableMessage(viewHolder, message, activity.getString(R.string.download_x_file, UIHelper.getFileDescriptionString(activity, message)));
             } else if (transferable != null && transferable.getStatus() == Transferable.STATUS_OFFER_CHECK_FILESIZE) {
-                displayDownloadableMessage(viewHolder, message, activity.getString(R.string.check_x_filesize, UIHelper.getFileDescriptionString(activity, message)), coloredBackground);
+                displayDownloadableMessage(viewHolder, message, activity.getString(R.string.check_x_filesize, UIHelper.getFileDescriptionString(activity, message)));
             } else {
-                displayInfoMessage(viewHolder, UIHelper.getMessagePreview(activity, message).first, coloredBackground);
+                displayInfoMessage(viewHolder, UIHelper.getMessagePreview(activity, message).first, message);
             }
         } else if (message.isFileOrImage() && message.getEncryption() != Message.ENCRYPTION_PGP && message.getEncryption() != Message.ENCRYPTION_DECRYPTION_FAILED) {
             if (message.getFileParams().width > 0 && message.getFileParams().height > 0) {
-                displayMediaPreviewMessage(viewHolder, message, coloredBackground);
+                displayMediaPreviewMessage(viewHolder, message);
             } else if (message.getFileParams().runtime > 0) {
-                displayAudioMessage(viewHolder, message, coloredBackground);
+                displayAudioMessage(viewHolder, message);
             } else {
-                displayOpenableMessage(viewHolder, message, coloredBackground);
+                displayOpenableMessage(viewHolder, message);
             }
         } else if (message.getEncryption() == Message.ENCRYPTION_PGP) {
             if (account.isPgpDecryptionServiceConnected()) {
                 if (conversation instanceof Conversation && !account.hasPendingPgpIntent((Conversation) conversation)) {
-                    displayInfoMessage(viewHolder, activity.getString(R.string.message_decrypting), coloredBackground);
+                    displayInfoMessage(viewHolder, activity.getString(R.string.message_decrypting), message);
                 } else {
-                    displayInfoMessage(viewHolder, activity.getString(R.string.pgp_message), coloredBackground);
+                    displayInfoMessage(viewHolder, activity.getString(R.string.pgp_message), message);
                 }
             } else {
-                displayInfoMessage(viewHolder, activity.getString(R.string.install_openkeychain), coloredBackground);
+                displayInfoMessage(viewHolder, activity.getString(R.string.install_openkeychain), message);
                 viewHolder.message_box.setOnClickListener(this::promptOpenKeychainInstall);
                 viewHolder.messageBody.setOnClickListener(this::promptOpenKeychainInstall);
             }
         } else if (message.getEncryption() == Message.ENCRYPTION_DECRYPTION_FAILED) {
-            displayInfoMessage(viewHolder, activity.getString(R.string.decryption_failed), coloredBackground);
+            displayInfoMessage(viewHolder, activity.getString(R.string.decryption_failed), message);
         } else if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL_NOT_FOR_THIS_DEVICE) {
-            displayInfoMessage(viewHolder, activity.getString(R.string.not_encrypted_for_this_device), coloredBackground);
+            displayInfoMessage(viewHolder, activity.getString(R.string.not_encrypted_for_this_device), message);
         } else if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL_FAILED) {
-            displayInfoMessage(viewHolder, activity.getString(R.string.omemo_decryption_failed), coloredBackground);
+            displayInfoMessage(viewHolder, activity.getString(R.string.omemo_decryption_failed), message);
         } else {
             if (message.isGeoUri()) {
-                displayLocationMessage(viewHolder, message, coloredBackground);
+                displayLocationMessage(viewHolder, message);
             } else if (message.bodyIsOnlyEmojis() && message.getType() != Message.TYPE_PRIVATE) {
-                displayEmojiMessage(viewHolder, message.getBody().trim(), coloredBackground);
+                displayEmojiMessage(viewHolder, message.getBody().trim(), message);
             } else if (message.treatAsDownloadable()) {
                 try {
                     final URI uri = new URI(message.getBody());
@@ -810,34 +790,25 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                                 message,
                                 activity.getString(R.string.check_x_filesize_on_host,
                                         UIHelper.getFileDescriptionString(activity, message),
-                                        uri.getHost()),
-                                coloredBackground);
+                                        uri.getHost()));
                 } catch (Exception e) {
                     displayDownloadableMessage(viewHolder,
                             message,
                             activity.getString(R.string.check_x_filesize,
-                                    UIHelper.getFileDescriptionString(activity, message)),
-                            coloredBackground);
+                                    UIHelper.getFileDescriptionString(activity, message)));
                 }
             } else {
-                displayTextMessage(viewHolder, message, coloredBackground, type);
+                displayTextMessage(viewHolder, message, type);
             }
         }
 
         if (type == RECEIVED) {
             if (isInValidSession) {
-                Drawable bubble;
-                bubble = ContextCompat.getDrawable(activity, activity.getThemeResource(R.attr.message_bubble_received_monochrome));
-                if (!mUseColoredBackground) {
-                    DrawableCompat.setTint(bubble, ContextCompat.getColor(activity, activity.getThemeResource(R.attr.message_bubble_received_color)));
-                } else {
-                    DrawableCompat.setTint(bubble, ContextCompat.getColor(activity, activity.getThemeResource(R.attr.message_bubble_received_colored_color)));
-                }
+                Drawable bubble = Theme.getReceivedMessageBubble(activity, message);
                 viewHolder.message_box.setBackground(bubble);
                 viewHolder.encryption.setVisibility(View.GONE);
             } else {
-                Drawable bubble = ContextCompat.getDrawable(activity, activity.getThemeResource(R.attr.message_bubble_received_monochrome));
-                DrawableCompat.setTint(bubble, ContextCompat.getColor(activity, activity.getThemeResource(R.attr.message_bubble_received_warning)));
+                Drawable bubble = Theme.getReceivedWarningMessageBubble(activity);
 
                 viewHolder.message_box.setBackground(bubble);
                 viewHolder.encryption.setVisibility(View.VISIBLE);
@@ -849,7 +820,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             }
         }
 
-        displayStatus(viewHolder, message, type, coloredBackground);
+        displayStatus(viewHolder, message, type);
 
         return view;
     }
@@ -898,7 +869,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(activity);
         this.mUseColoredBackground = p.getBoolean("use_green_background", activity.getResources().getBoolean(R.bool.use_green_background));
     }
-
 
     public void setHighlightedTerm(List<String> terms) {
         this.highlightedTerm = terms == null ? null : StylingHelper.filterHighlightedWords(terms);

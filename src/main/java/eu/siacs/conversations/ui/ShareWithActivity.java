@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -87,10 +88,14 @@ public class ShareWithActivity extends XmppActivity implements XmppConnectionSer
         setContentView(R.layout.activity_share_with);
 
         setSupportActionBar(findViewById(R.id.toolbar));
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setHomeButtonEnabled(false);
+        ActionBar bar = getSupportActionBar();
+        if (bar != null) {
+            bar.setDisplayHomeAsUpEnabled(false);
+            bar.setHomeButtonEnabled(false);
         }
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
         setTitle(getString(R.string.title_activity_sharewith));
 

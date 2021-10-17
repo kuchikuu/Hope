@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -121,7 +122,10 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
         super.onCreate(savedInstanceState);
         ActivityWelcomeBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome);
         setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar(), false);
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar, false);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         binding.registerNewAccount.setOnClickListener(v -> {
             final Intent intent = new Intent(this, PickServerActivity.class);
             addInviteUri(intent);

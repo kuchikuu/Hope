@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -59,7 +60,10 @@ public class ShareLocationActivity extends LocationActivity implements LocationL
 
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_share_location);
         setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         setupMapView(binding.map, LocationProvider.getGeoPoint(this));
 
         this.binding.cancelButton.setOnClickListener(view -> {

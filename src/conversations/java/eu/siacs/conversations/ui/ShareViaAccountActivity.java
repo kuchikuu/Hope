@@ -3,6 +3,8 @@ package eu.siacs.conversations.ui;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import androidx.appcompat.app.ActionBar;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,10 @@ public class ShareViaAccountActivity extends XmppActivity {
 
         setContentView(R.layout.activity_manage_accounts);
         setSupportActionBar(findViewById(R.id.toolbar));
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         accountListView = findViewById(R.id.account_list);
         this.mAccountAdapter = new AccountAdapter(this, accountList, false);
         accountListView.setAdapter(this.mAccountAdapter);

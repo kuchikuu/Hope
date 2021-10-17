@@ -42,6 +42,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.common.base.Strings;
@@ -96,7 +97,10 @@ public class SearchActivity extends XmppActivity implements TextWatcher, OnSearc
 		super.onCreate(bundle);
 		this.binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
 		setSupportActionBar(this.binding.toolbar);
-		configureActionBar(getSupportActionBar());
+		ActionBar bar = getSupportActionBar();
+		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+		configureActionBar(bar);
+		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 		this.messageListAdapter = new MessageAdapter(this, this.messages);
 		this.messageListAdapter.setOnContactPictureClicked(this);
 		this.binding.searchResults.setAdapter(messageListAdapter);

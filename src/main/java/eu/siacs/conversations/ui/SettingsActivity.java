@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
@@ -55,6 +56,7 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
     public static final String AUTOMATIC_MESSAGE_DELETION = "automatic_message_deletion";
     public static final String BROADCAST_LAST_ACTIVITY = "last_activity";
     public static final String THEME = "theme";
+	public static final String CUSTOM_COLOR_PRIMARY = "custom_colorPrimary";
     public static final String SHOW_DYNAMIC_TAGS = "show_dynamic_tags";
     public static final String OMEMO_SETTING = "omemo";
     public static final String PREVENT_SCREENSHOTS = "prevent_screenshots";
@@ -81,8 +83,11 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
                 .getDecorView()
                 .setBackgroundColor(
                         StyledAttributes.getColor(this, R.attr.color_background_primary));
-        setSupportActionBar(findViewById(R.id.toolbar));
-        configureActionBar(getSupportActionBar());
+		setSupportActionBar(findViewById(R.id.toolbar));
+		ActionBar bar = getSupportActionBar();
+		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+		configureActionBar(bar);
+		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
     }
 
     @Override
@@ -457,16 +462,29 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
             if (this.mTheme != theme) {
                 recreate();
             }
-        } else if (name.equals(PREVENT_SCREENSHOTS)) {
+        } else if (name.equals(CUSTOM_COLOR_PRIMARY)) {
+			setSupportActionBar(findViewById(R.id.toolbar));
+			ActionBar bar = getSupportActionBar();
+			bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+			configureActionBar(bar);
+			getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
+
+		}else if (name.equals(PREVENT_SCREENSHOTS)) {
             SettingsUtils.applyScreenshotPreventionSetting(this);
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        SettingsUtils.applyScreenshotPreventionSetting(this);
-    }
+	@Override
+	public void onResume(){
+		super.onResume();
+		SettingsUtils.applyScreenshotPreventionSetting(this);
+
+		setSupportActionBar(findViewById(R.id.toolbar));
+		ActionBar bar = getSupportActionBar();
+		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+		configureActionBar(bar);
+		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
+	}
 
     @Override
     public void onRequestPermissionsResult(

@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 
@@ -216,7 +217,10 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_contact_details);
 
         setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         binding.showInactiveDevices.setOnClickListener(v -> {
             showInactiveOmemo = !showInactiveOmemo;
             populateView();

@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import eu.siacs.conversations.R;
@@ -26,7 +27,10 @@ public class AboutActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_about);
         setSupportActionBar(findViewById(R.id.toolbar));
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         setTitle(getString(R.string.title_activity_about_x, getString(R.string.app_name)));
     }
 }

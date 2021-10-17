@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 
 import java.util.ArrayList;
@@ -93,7 +94,10 @@ public abstract class AbstractSearchableListItemActivity extends XmppActivity im
 		super.onCreate(savedInstanceState);
 		this.binding = DataBindingUtil.setContentView(this,R.layout.activity_choose_contact);
 		setSupportActionBar(binding.toolbar);
-		configureActionBar(getSupportActionBar());
+		ActionBar bar = getSupportActionBar();
+		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+		configureActionBar(bar);
+		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 		this.binding.chooseContactList.setFastScrollEnabled(true);
 		mListItemsAdapter = new ListItemAdapter(this, listItems);
 		this.binding.chooseContactList.setAdapter(mListItemsAdapter);

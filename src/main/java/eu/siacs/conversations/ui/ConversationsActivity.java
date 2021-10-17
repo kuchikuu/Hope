@@ -354,7 +354,10 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         OmemoSetting.load(this);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_conversations);
         setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.getFragmentManager().addOnBackStackChangedListener(this::invalidateActionBarTitle);
         this.getFragmentManager().addOnBackStackChangedListener(this::showDialogsIfMainIsOverview);
         this.initializeFragments();
@@ -563,6 +566,12 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public void onResume() {
         super.onResume();
         this.mActivityPaused = false;
+
+        setSupportActionBar(binding.toolbar);
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
     }
 
     private void initializeFragments() {

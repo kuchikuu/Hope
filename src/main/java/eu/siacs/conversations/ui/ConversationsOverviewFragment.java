@@ -33,6 +33,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -109,7 +111,7 @@ public class ConversationsOverviewFragment extends XmppFragment {
 			super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 			if(actionState != ItemTouchHelper.ACTION_STATE_IDLE){
 				Paint paint = new Paint();
-				paint.setColor(StyledAttributes.getColor(activity,R.attr.conversations_overview_background));
+				paint.setColor(Theme.getSwipeBackgroundColor(activity));
 				paint.setStyle(Paint.Style.FILL);
 				c.drawRect(viewHolder.itemView.getLeft(),viewHolder.itemView.getTop()
 						,viewHolder.itemView.getRight(),viewHolder.itemView.getBottom(), paint);
@@ -288,6 +290,12 @@ public class ConversationsOverviewFragment extends XmppFragment {
 		this.mSwipeEscapeVelocity = getResources().getDimension(R.dimen.swipe_escape_velocity);
 		this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_conversations_overview, container, false);
 		this.binding.fab.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
+		this.binding.fab.setBackgroundTintList(ColorStateList.valueOf(Theme.getFloatingActionButtonColor(activity)));
+
+		// programmatically themed scrollbar colours depend on:
+		if (android.os.Build.VERSION.SDK_INT >= 29) {
+			binding.list.setVerticalScrollbarThumbDrawable(Theme.getVerticalScrollbarColorDrawable(activity));
+		}
 
 		this.conversationsAdapter = new ConversationAdapter(this.activity, this.conversations);
 		this.conversationsAdapter.setConversationClickListener((view, conversation) -> {
@@ -353,6 +361,13 @@ public class ConversationsOverviewFragment extends XmppFragment {
 	public void onResume() {
 		super.onResume();
 		Log.d(Config.LOGTAG, "ConversationsOverviewFragment.onResume()");
+
+		this.binding.fab.setBackgroundTintList(ColorStateList.valueOf(Theme.getFloatingActionButtonColor(activity)));
+
+		// programmatically themed scrollbar colours depend on:
+		if (android.os.Build.VERSION.SDK_INT >= 29) {
+			binding.list.setVerticalScrollbarThumbDrawable(Theme.getVerticalScrollbarColorDrawable(activity));
+		}
 	}
 
 	@Override

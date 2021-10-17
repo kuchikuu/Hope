@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +32,10 @@ public class ChooseAccountForProfilePictureActivity extends XmppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_accounts);
         setSupportActionBar(findViewById(R.id.toolbar));
-        configureActionBar(getSupportActionBar(), false);
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         accountListView = findViewById(R.id.account_list);
         this.mAccountAdapter = new AccountAdapter(this, accountList, false);
         accountListView.setAdapter(this.mAccountAdapter);

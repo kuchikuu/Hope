@@ -347,6 +347,15 @@
                     android:summary="@string/pref_channel_discovery_summary"
                     android:title="@string/pref_channel_discovery" />
             </PreferenceCategory>
+            <PreferenceCategory
+                android:key="customise_themeing"
+                android:title="@string/pref_custom_theme">
+                <EditTextPreference
+                    android:key="custom_colorPrimary"
+                    android:title="@string/pref_custom_theme_primary_color_title"
+                    android:summary="@string/pref_custom_theme_primary_color_summary"
+                    />
+            </PreferenceCategory>
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="eu.siacs.conversations.ui.SettingsActivity"

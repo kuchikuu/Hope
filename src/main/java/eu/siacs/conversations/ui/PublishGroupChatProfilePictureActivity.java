@@ -38,6 +38,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -92,7 +93,10 @@ public class PublishGroupChatProfilePictureActivity extends XmppActivity impleme
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_publish_profile_picture);
         setSupportActionBar(this.binding.toolbar);
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.binding.cancelButton.setOnClickListener((v) -> this.finish());
         this.binding.secondaryHint.setVisibility(View.GONE);
         this.binding.accountImage.setOnClickListener((v) -> PublishProfilePictureActivity.chooseAvatar(this));

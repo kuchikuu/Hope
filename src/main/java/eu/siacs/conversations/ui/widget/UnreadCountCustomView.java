@@ -12,6 +12,7 @@ import android.view.View;
 import androidx.core.content.ContextCompat;
 
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.ui.Theme;
 
 public class UnreadCountCustomView extends View {
 
@@ -38,7 +39,7 @@ public class UnreadCountCustomView extends View {
 
     private void initXMLAttrs(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.UnreadCountCustomView);
-        setBackgroundColor(a.getColor(a.getIndex(0), ContextCompat.getColor(context, R.color.green700_desaturated)));
+        setBackgroundColor(Theme.getUnreadCountBackgroundColor(getContext()));
         a.recycle();
     }
 

@@ -56,6 +56,7 @@ import android.widget.Toast;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.inputmethod.InputConnectionCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
@@ -1234,6 +1235,11 @@ public class ConversationFragment extends XmppFragment
                     new EditMessageActionModeCallback(this.binding.textinput));
         }
 
+        // programmatically themed scrollbar colours depend on:
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            binding.messagesView.setVerticalScrollbarThumbDrawable(Theme.getVerticalScrollbarColorDrawable(activity));
+        }
+
         return binding.getRoot();
     }
 
@@ -2054,6 +2060,11 @@ public class ConversationFragment extends XmppFragment
     public void onResume() {
         super.onResume();
         binding.messagesView.post(this::fireReadEvent);
+
+        // programmatically themed scrollbar colours depend on:
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            binding.messagesView.setVerticalScrollbarThumbDrawable(Theme.getVerticalScrollbarColorDrawable(activity));
+        }
     }
 
     private void fireReadEvent() {

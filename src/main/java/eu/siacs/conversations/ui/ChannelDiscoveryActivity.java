@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 
 import java.util.Collections;
@@ -78,7 +79,16 @@ public class ChannelDiscoveryActivity extends XmppActivity implements MenuItem.O
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_channel_discovery);
         setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar(), true);
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
+
+        // programmatically themed scrollbar colours depend on:
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            binding.list.setVerticalScrollbarThumbDrawable(Theme.getVerticalScrollbarColorDrawable(this));
+        }
+
         binding.list.setAdapter(this.adapter);
         this.adapter.setOnChannelSearchResultSelectedListener(this);
         this.optedIn = getPreferences().getBoolean(CHANNEL_DISCOVERY_OPT_IN, false);

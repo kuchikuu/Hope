@@ -3,6 +3,7 @@ package eu.siacs.conversations.ui;
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
@@ -27,6 +28,10 @@ public class EnterNameActivity extends XmppActivity implements XmppConnectionSer
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_enter_name);
         setSupportActionBar((Toolbar) this.binding.toolbar);
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.binding.next.setOnClickListener(this::next);
         this.setNick.set(savedInstanceState != null && savedInstanceState.getBoolean("set_nick",false));
     }

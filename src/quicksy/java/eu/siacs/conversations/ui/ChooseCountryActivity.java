@@ -12,9 +12,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +87,10 @@ public class ChooseCountryActivity extends ActionBarActivity implements CountryA
         setTheme(ThemeHelper.find(this));
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_choose_country);
         setSupportActionBar((Toolbar) this.binding.toolbar);
-        configureActionBar(getSupportActionBar());
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
+        configureActionBar(bar);
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.countries.addAll(PhoneNumberUtilWrapper.getCountries(this));
         Collections.sort(this.countries);
         this.binding.countries.setAdapter(countryAdapter);
