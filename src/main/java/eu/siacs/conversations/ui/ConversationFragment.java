@@ -1266,9 +1266,12 @@ public class ConversationFragment extends XmppFragment
     }
 
     private void quoteMedia(Message message) {
+        Message.FileParams params = message.getFileParams();
+        String filesize = params.size != null ? UIHelper.filesizeToString(params.size) : null;
+
         String text =
-                MimeUtils.getMimeTypeEmoji(getActivity(), message.getMimeType())
-                + " _"
+                MimeUtils.getMimeTypeEmoji(getActivity(), message.getMimeType()) + " _"
+                + filesize + "; "
                 + UIHelper.readableTimeDifference(getActivity(), message.getTimeSent(), true, true)
                 + "_";
         quoteText(text);
