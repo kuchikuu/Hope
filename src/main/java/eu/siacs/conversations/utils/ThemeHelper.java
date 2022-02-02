@@ -39,6 +39,7 @@ import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.widget.TextView;
 
+import androidx.annotation.StyleRes;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -93,7 +94,6 @@ public class ThemeHelper {
 			case "medium":
 				switch (themeId) {
 					case "dark":
-						return R.style.ConversationsTheme_Dark_Dialog_Medium;
 					case "black":
 						return R.style.ConversationsTheme_Dark_Dialog_Medium;
 					default:
@@ -102,7 +102,6 @@ public class ThemeHelper {
 			case "large":
 				switch (themeId) {
 					case "dark":
-						return R.style.ConversationsTheme_Dark_Dialog_Large;
 					case "black":
 						return R.style.ConversationsTheme_Dark_Dialog_Large;
 					default:
@@ -111,12 +110,25 @@ public class ThemeHelper {
 			default:
 				switch (themeId) {
 					case "dark":
-						return R.style.ConversationsTheme_Dark_Dialog;
 					case "black":
 						return R.style.ConversationsTheme_Dark_Dialog;
 					default:
 						return R.style.ConversationsTheme_Dialog;
 				}
+		}
+	}
+
+	public static boolean isDark(@StyleRes int id) {
+		switch (id) {
+			case R.style.ConversationsTheme_Dark:
+			case R.style.ConversationsTheme_Dark_Large:
+			case R.style.ConversationsTheme_Dark_Medium:
+			case R.style.ConversationsTheme_Black:
+			case R.style.ConversationsTheme_Black_Large:
+			case R.style.ConversationsTheme_Black_Medium:
+				return true;
+			default:
+				return false;
 		}
 	}
 

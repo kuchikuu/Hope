@@ -7,14 +7,29 @@ import android.graphics.Color;
  * material design color palettes
  * Created by Ammar Mardawi on 12/4/16.
  *
- * A humble copy from https://stackoverflow.com/questions/30870167/convert-colorprimary-to-colorprimarydark-how-much-darker/40964456#40964456.
+ * Originally copied by millesimus
+ * from https://stackoverflow.com/questions/30870167/convert-colorprimary-to-colorprimarydark-how-much-darker/40964456#40964456.
  */
 
 public class ColorUtil {
 
     /**
+     * Darkens a given color, but returns black (instead of a reddish tone)
+     * if input color is black.
+     *
+     * @author millesimus
+     */
+    public static int safeDarken(int base, int amount) {
+        if (base == Color.parseColor("#000000")) {
+            return base;
+        }
+        return darken(base, amount);
+    }
+
+    /**
      * Darkens a given color
-     * @param base base color
+     *
+     * @param base   base color
      * @param amount amount between 0 and 100
      * @return darken color
      */
@@ -23,7 +38,7 @@ public class ColorUtil {
         Color.colorToHSV(base, hsv);
         float[] hsl = hsv2hsl(hsv);
         hsl[2] -= amount / 100f;
-        if (hsl[2] < 0)
+        if (hsl[2] < 0f)
             hsl[2] = 0f;
         hsv = hsl2hsv(hsl);
         return Color.HSVToColor(hsv);
@@ -31,7 +46,8 @@ public class ColorUtil {
 
     /**
      * lightens a given color
-     * @param base base color
+     *
+     * @param base   base color
      * @param amount amount between 0 and 100
      * @return lightened
      */
@@ -46,6 +62,37 @@ public class ColorUtil {
         return Color.HSVToColor(hsv);
     }
 
+    /**
+     * Desaturate a given color, but return the original color if the hue changes
+     * or the desaturated color is lighter than the original (avoiding dark colors turning reddish).
+     */
+    public static int safeDesaturate(int base, int amount) {
+        int desaturated = desaturate(base, amount);
+        if (isHueDifferent(desaturated, base) || isLighterThan(desaturated, base)) {
+            return base;
+        }
+        return desaturated;
+    }
+
+    /**
+     * Desaturates a given color
+     *
+     * @param base base color int
+     * @param amount amount between 0 and 100
+     * @return desaturated color int
+     * @author millesimus
+     */
+    public static int desaturate(int base, int amount) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(base, hsv);
+        float[] hsl = hsv2hsl(hsv);
+        hsl[1] += amount / 100f;
+        if (hsl[1] < 0) {
+            hsl[1] = 0f;
+        }
+        hsv = hsl2hsv(hsl);
+        return Color.HSVToColor(hsv);
+    }
 
     /**
      * Converts HSV (Hue, Saturation, Value) color to HSL (Hue, Saturation, Lightness)
@@ -104,5 +151,27 @@ public class ColorUtil {
                 2f * sat / (light + sat), //Saturation
                 light + sat //Value
         };
+    }
+
+    /** @author millesimus */
+    private static boolean isLighterThan(int lighter, int than) {
+        float[] hsvLighter = new float[3];
+        Color.colorToHSV(lighter, hsvLighter);
+        float[] hslLighter = hsv2hsl(hsvLighter);
+        float[] hsvThan = new float[3];
+        Color.colorToHSV(than, hsvThan);
+        float[] hslThan = hsv2hsl(hsvThan);
+
+        return hslLighter[2] > hslThan[2];
+    }
+
+    /** @author millesimus */
+    private static boolean isHueDifferent(int hue, int different) {
+        float[] hsvHue = new float[3];
+        Color.colorToHSV(hue, hsvHue);
+        float[] hsvDifferent = new float[3];
+        Color.colorToHSV(different, hsvDifferent);
+
+        return hsvHue[0] != hsvDifferent[0];
     }
 }
