@@ -1,5 +1,6 @@
 package eu.siacs.conversations.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Message;
+import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.ui.util.ColorUtil;
 
 /**
@@ -111,6 +113,10 @@ public class Theme {
             return Color.parseColor(String.format("#%06X", (0xFFFFFF & getThemedColor(context, R.attr.colorPrimary))));
         }
         return Color.parseColor(primaryColorStr);
+    }
+
+    private static boolean isPrimaryColorCustomised(Context context) {
+        return getPrimaryColor(context) != Color.parseColor(String.format("#%06X", (0xFFFFFF & getThemedColor(context, R.attr.colorPrimary))));
     }
 
     private static boolean isHexColorString(String string) {
@@ -267,6 +273,247 @@ public class Theme {
     // Blocklist
     public static int getAddBlockedJidButtonColor(Context context) {
         return getFloatingActionButtonColor(context);
+    }
+
+    // SendButtons (the following methods allow forks to overwrite colors send colors in theme.xml, but falls back
+    // to default colors if user enters a custom primary color (as not every possible color like
+    // Bordeau would be an appropriate 'online' color)
+
+    public static Drawable getDefaultSendButton(Context context) {
+        Drawable button = ContextCompat.getDrawable(context, getThemeResource(context, R.attr.ic_send_text_icon));
+        DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_text_offline)));
+        return button;
+    }
+
+    private static Drawable getSendTextButton(Context context) {
+        return ContextCompat.getDrawable(context, getThemeResource(context, R.attr.ic_send_text_icon));
+    }
+
+    public static Drawable getSendTextButton(Context context, Presence.Status status) {
+        Drawable button = getSendTextButton(context);
+        if (isPrimaryColorCustomised(context)) {
+            return getDefaultTintedButton(context, button, status);
+        } else {
+            switch (status) {
+                case CHAT:
+                case ONLINE:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_text_online)));
+                    return button;
+                case AWAY:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_text_away)));
+                    return button;
+                case XA:
+                case DND:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_text_dnd)));
+                    return button;
+                default:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_text_offline)));
+                    return button;
+            }
+        }
+    }
+
+    private static Drawable getSendVideoButton(Context context) {
+        return ContextCompat.getDrawable(context, getThemeResource(context, R.attr.ic_send_videocam_icon));
+    }
+
+    public static Drawable getSendVideoButton(Context context, Presence.Status status) {
+        Drawable button = getSendVideoButton(context);
+        if (isPrimaryColorCustomised(context)) {
+            return getDefaultTintedButton(context, button, status);
+        } else {
+            switch (status) {
+                case CHAT:
+                case ONLINE:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_videocam_online)));
+                    return button;
+                case AWAY:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_videocam_away)));
+                    return button;
+                case XA:
+                case DND:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_videocam_dnd)));
+                    return button;
+                default:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_videocam_offline)));
+                    return button;
+            }
+        }
+    }
+
+    private static Drawable getSendPhotoButton(Context context) {
+        return ContextCompat.getDrawable(context, getThemeResource(context, R.attr.ic_send_photo_icon));
+    }
+
+    public static Drawable getSendPhotoButton(Context context, Presence.Status status) {
+        Drawable button = getSendPhotoButton(context);
+        if (isPrimaryColorCustomised(context)) {
+            return getDefaultTintedButton(context, button, status);
+        } else {
+            switch (status) {
+                case CHAT:
+                case ONLINE:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_photo_online)));
+                    return button;
+                case AWAY:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_photo_away)));
+                    return button;
+                case XA:
+                case DND:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_photo_dnd)));
+                    return button;
+                default:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_photo_offline)));
+                    return button;
+            }
+        }
+    }
+
+    private static Drawable getSendPictureButton(Context context) {
+        return ContextCompat.getDrawable(context, getThemeResource(context, R.attr.ic_send_picture_icon));
+    }
+
+    public static Drawable getSendPictureButton(Context context, Presence.Status status) {
+        Drawable button = getSendPictureButton(context);
+        if (isPrimaryColorCustomised(context)) {
+            return getDefaultTintedButton(context, button, status);
+        } else {
+            switch (status) {
+                case CHAT:
+                case ONLINE:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_picture_online)));
+                    return button;
+                case AWAY:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_picture_away)));
+                    return button;
+                case XA:
+                case DND:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_picture_dnd)));
+                    return button;
+                default:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_picture_offline)));
+                    return button;
+            }
+        }
+    }
+
+    private static Drawable getSendVoiceButton(Context context) {
+        return ContextCompat.getDrawable(context, getThemeResource(context, R.attr.ic_send_voice_icon));
+    }
+
+    public static Drawable getSendVoiceButton(Context context, Presence.Status status) {
+        Drawable button = getSendVoiceButton(context);
+        if (isPrimaryColorCustomised(context)) {
+            return getDefaultTintedButton(context, button, status);
+        } else {
+            switch (status) {
+                case CHAT:
+                case ONLINE:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_voice_online)));
+                    return button;
+                case AWAY:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_voice_away)));
+                    return button;
+                case XA:
+                case DND:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_voice_dnd)));
+                    return button;
+                default:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_voice_offline)));
+                    return button;
+            }
+        }
+    }
+
+    private static Drawable getSendLocationButton(Context context) {
+        return ContextCompat.getDrawable(context, getThemeResource(context, R.attr.ic_send_location_icon));
+    }
+
+    public static Drawable getSendLocationButton(Context context, Presence.Status status) {
+        Drawable button = getSendLocationButton(context);
+        if (isPrimaryColorCustomised(context)) {
+            return getDefaultTintedButton(context, button, status);
+        } else {
+            switch (status) {
+                case CHAT:
+                case ONLINE:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_location_online)));
+                    return button;
+                case AWAY:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_location_away)));
+                    return button;
+                case XA:
+                case DND:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_location_dnd)));
+                    return button;
+                default:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_location_offline)));
+                    return button;
+            }
+        }
+    }
+
+    private static Drawable getCancelSendingButton(Context context) {
+        return ContextCompat.getDrawable(context, getThemeResource(context, R.attr.ic_send_cancel_icon));
+    }
+
+    public static Drawable getCancelSending(Context context, Presence.Status status) {
+        Drawable button = getCancelSendingButton(context);
+        if (isPrimaryColorCustomised(context)) {
+            return getDefaultTintedButton(context, button, status);
+        } else {
+            switch (status) {
+                case CHAT:
+                case ONLINE:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_cancel_online)));
+                    return button;
+                case AWAY:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_cancel_away)));
+                    return button;
+                case XA:
+                case DND:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_cancel_dnd)));
+                    return button;
+                default:
+                    DrawableCompat.setTint(button, ContextCompat.getColor(context, getThemeResource(context, R.attr.ic_send_cancel_offline)));
+                    return button;
+            }
+        }
+    }
+
+    private static Drawable getDefaultTintedButton(Context context, Drawable button, Presence.Status status){
+        switch (status) {
+            case CHAT:
+            case ONLINE:
+                DrawableCompat.setTint(button, getDefaultOnlineColor(context));
+                return button;
+            case AWAY:
+                DrawableCompat.setTint(button, getDefaultAwayColor(context));
+                return button;
+            case XA:
+            case DND:
+                DrawableCompat.setTint(button, getDefaultDndColor(context));
+                return button;
+            default:
+                DrawableCompat.setTint(button, getDefaultOfflineColor(context));
+                return button;
+        }
+    }
+
+    private static int getDefaultOnlineColor(Context context){
+        return ContextCompat.getColor(context, R.color.green600);
+    }
+
+    private static int getDefaultAwayColor(Context context) {
+        return ContextCompat.getColor(context, R.color.orange500);
+    }
+
+    private static int getDefaultDndColor(Context context) {
+        return ContextCompat.getColor(context, R.color.red500);
+    }
+
+    private static int getDefaultOfflineColor(Context context) {
+        return ContextCompat.getColor(context, R.color.white70);
     }
 
     //
