@@ -28,8 +28,7 @@ public class ColorUtil {
 
     /**
      * Darkens a given color
-     *
-     * @param base   base color
+     * @param base base color
      * @param amount amount between 0 and 100
      * @return darken color
      */
@@ -46,8 +45,7 @@ public class ColorUtil {
 
     /**
      * lightens a given color
-     *
-     * @param base   base color
+     * @param base base color
      * @param amount amount between 0 and 100
      * @return lightened
      */
