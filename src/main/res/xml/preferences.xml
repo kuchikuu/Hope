@@ -350,6 +350,11 @@
             <PreferenceCategory
                 android:key="customise_themeing"
                 android:title="@string/pref_custom_theme">
+                <net.margaritov.preference.colorpicker.ColorPickerPreference
+                    android:key="custom_colorPrimaryInt"
+                    android:title="@string/pref_custom_theme_primary_color_title"
+                    alphaSlider="false"
+                    />
                 <EditTextPreference
                     android:key="custom_colorPrimary"
                     android:title="@string/pref_custom_theme_primary_color_title"

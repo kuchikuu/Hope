@@ -71,9 +71,10 @@ public class Theme {
 
     private static int getPrimaryColor(Context context){
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
-        String primaryColorStr = p.getString("custom_colorPrimary",  String.format("#%06X", (0xFFFFFF & getThemedColor(context, R.attr.colorPrimary))));
+        int primaryColorInt = p.getInt("custom_colorPrimaryInt", getThemedColor(context, R.attr.colorPrimary));
+        String primaryColorStr = p.getString("custom_colorPrimary",  String.format("#%06X", (0xFFFFFF & primaryColorInt)));
         if (!isHexColorString(primaryColorStr)) {
-            return Color.parseColor(String.format("#%06X", (0xFFFFFF & getThemedColor(context, R.attr.colorPrimary))));
+            return Color.parseColor(String.format("#%06X", (0xFFFFFF & primaryColorInt)));
         }
         return Color.parseColor(primaryColorStr);
     }
