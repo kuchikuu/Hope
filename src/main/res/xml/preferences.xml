@@ -352,13 +352,16 @@
                 android:title="@string/pref_custom_theme">
                 <net.margaritov.preference.colorpicker.ColorPickerPreference
                     android:key="custom_colorPrimaryInt"
-                    android:title="@string/pref_custom_theme_primary_color_title"
+                    android:title="@string/pref_custom_theme_primary_color_picker_title"
+                    android:summary="@string/pref_custom_theme_primary_color_picker_summary"
+                    android:defaultValue="?attr/colorPrimary"
+                    hexValue="true"
                     alphaSlider="false"
                     />
-                <EditTextPreference
-                    android:key="custom_colorPrimary"
-                    android:title="@string/pref_custom_theme_primary_color_title"
-                    android:summary="@string/pref_custom_theme_primary_color_summary"
+                <Preference
+                    android:key="customise_theming_reset"
+                    android:title="@string/pref_custom_theme_reset_title"
+                    android:summary="@string/pref_custom_theme_reset_summary"
                     />
             </PreferenceCategory>
             <intent

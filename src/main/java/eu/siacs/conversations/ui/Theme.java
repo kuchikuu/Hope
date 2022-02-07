@@ -16,7 +16,6 @@ import androidx.core.graphics.drawable.DrawableCompat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Message;
@@ -61,26 +60,17 @@ public class Theme {
         return ContextCompat.getColor(context, getThemeResource(context, attr));
     }
 
-    private static boolean isHexColorString(String string) {
-        return Pattern.matches("^#(?:[0-9a-fA-F]{3}){1,2}$", string);
-    }
-
     //
     // GENERAL | Theme
     //
 
     private static int getPrimaryColor(Context context){
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
-        int primaryColorInt = p.getInt("custom_colorPrimaryInt", getThemedColor(context, R.attr.colorPrimary));
-        String primaryColorStr = p.getString("custom_colorPrimary",  String.format("#%06X", (0xFFFFFF & primaryColorInt)));
-        if (!isHexColorString(primaryColorStr)) {
-            return Color.parseColor(String.format("#%06X", (0xFFFFFF & primaryColorInt)));
-        }
-        return Color.parseColor(primaryColorStr);
+        return p.getInt("custom_colorPrimaryInt", getThemedColor(context, R.attr.colorPrimary));
     }
 
     private static boolean isPrimaryColorCustomised(Context context) {
-        return getPrimaryColor(context) != Color.parseColor(String.format("#%06X", (0xFFFFFF & getThemedColor(context, R.attr.colorPrimary))));
+        return getPrimaryColor(context) != getThemedColor(context, R.attr.colorPrimary);
     }
 
     private static int getPrimaryDarkColor(Context context){

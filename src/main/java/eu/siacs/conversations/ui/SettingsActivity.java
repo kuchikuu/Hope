@@ -303,7 +303,18 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
             deleteOmemoPreference.setOnPreferenceClickListener(
                     preference -> deleteOmemoIdentities());
         }
-    }
+
+		final Preference resetCustomTheme = mSettingsFragment.findPreference("customise_theming_reset");
+		if (resetCustomTheme != null) {
+			resetCustomTheme.setOnPreferenceClickListener(preference -> {
+					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+					SharedPreferences.Editor editor = settings.edit();
+					editor.remove("custom_colorPrimaryInt");
+					editor.apply();
+				return true;
+			});
+		}
+	}
 
     private void changeOmemoSettingSummary() {
         ListPreference omemoPreference =
@@ -468,8 +479,7 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
 			bar.setBackgroundDrawable(Theme.getActionBarColor(this));
 			configureActionBar(bar);
 			getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
-
-		}else if (name.equals(PREVENT_SCREENSHOTS)) {
+		} else if (name.equals(PREVENT_SCREENSHOTS)) {
             SettingsUtils.applyScreenshotPreventionSetting(this);
         }
     }
