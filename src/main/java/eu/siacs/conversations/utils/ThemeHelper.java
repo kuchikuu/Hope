@@ -132,6 +132,17 @@ public class ThemeHelper {
 		}
 	}
 
+	public static boolean isBlack(@StyleRes int id) {
+		switch (id) {
+			case R.style.ConversationsTheme_Black:
+			case R.style.ConversationsTheme_Black_Large:
+			case R.style.ConversationsTheme_Black_Medium:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	public static void fix(Snackbar snackbar) {
 		final Context context = snackbar.getContext();
 		TypedArray typedArray = context.obtainStyledAttributes(new int[]{R.attr.TextSizeBody1});
