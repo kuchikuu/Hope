@@ -399,6 +399,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.messageBody.setVisibility(View.VISIBLE);
 
         viewHolder.messageBody.setTextAppearance(getContext(), Theme.getMessageBodyTextAppearance(activity, message));
+        viewHolder.messageBody.setTextColor(Theme.getMessageBodyTextColor(activity, message));
 
         if (type == SENT){
             viewHolder.messageBody.setHighlightColor(Theme.getSentMessageHighlightColor(activity));

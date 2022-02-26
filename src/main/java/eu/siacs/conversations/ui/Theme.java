@@ -36,6 +36,10 @@ public class Theme {
         return ThemeHelper.isDark(ThemeHelper.find(context));
     }
 
+    private static boolean isThemeBlack(Context context) {
+        return ThemeHelper.isBlack(ThemeHelper.find(context));
+    }
+
     /**
      * Get a resource of the current theme.
      *
@@ -114,15 +118,24 @@ public class Theme {
     }
 
     /**
-     * @return decision whether received and colored message bubble is too bright for bright font.
+     * @return decision whether a message bubble is too bright for bright font.
      * Calculates difference between message bubble color and black / white for its decision. Thus
      * it does not decide against the real, not purely black / white font colors, but this should
      * make little difference.
      *
+     * If theme is black, it always returns false, since black theme message bubbles are dark inside.
+     *
      * Based on W3C standard and logic thankfully taken from https://stackoverflow.com/a/3943023.
      */
-    private static boolean isReceivedMessageBubbleColorTooBright(Context context, Message message) {
-        int bubbleColor = getReceivedMessageBubbleColor(context, message);
+    private static boolean isMessageBubbleColorTooBright(Context context, Message message) {
+        if (isThemeBlack(context)) {
+            return false;
+        }
+        int bubbleColor = getThemedColor(context, R.attr.message_bubble_sent_color);
+
+        if (message.getStatus() == Message.STATUS_RECEIVED) {
+            bubbleColor = getReceivedMessageBubbleColor(context, message);
+        }
 
         List<Float> colorList = new ArrayList<>();
         colorList.add((float) Color.red(bubbleColor));
@@ -186,8 +199,8 @@ public class Theme {
     //
     private static Drawable getMessageIcon(Context context, int drawableResource, Message message){
         Drawable icon = ContextCompat.getDrawable(context, getThemeResource(context, drawableResource));
-        int iconColorAttr = decideColor(context, R.attr.message_icons_tint, R.attr.message_icons_tint_on_colored, message);
-        DrawableCompat.setTint(icon, getThemedColor(context, iconColorAttr));
+        int iconColor = getMessageStatusTextColor(context, message);
+        DrawableCompat.setTint(icon, iconColor);
         return icon;
     }
 
@@ -215,38 +228,28 @@ public class Theme {
     // MESSAGES | Texts
     //
 
-    /**
-     * Decides between theme attributes based on the "colored message bubble" user preference, but also tests for
-     * contrast level.
-     *
-     * @return The attribute of the corresponding color.
-     */
-    private static int decideTextColor(Context context, int attrDefault, int attrOnColored, Message message) {
-        int colorAttr = attrDefault;
-        if (isMessageBubbleColored(context, message) && !isReceivedMessageBubbleColorTooBright(context, message)) {
-            colorAttr = attrOnColored;
-        }
-        return colorAttr;
-    }
-
     private static int getMessageSecondaryTextColor(Context context, Message message) {
-        return getThemedColor(context, decideTextColor(context, R.attr.message_secondary_text_color, R.attr.message_secondary_text_color_on_colored, message));
+        return isMessageBubbleColorTooBright(context, message) ? ContextCompat.getColor(context, R.color.black54) : ContextCompat.getColor(context, R.color.white70);
     }
 
     public static int getMessageStatusTextColor(Context context, Message message) {
         return getMessageSecondaryTextColor(context, message);
     }
 
+    public static int getMessageBodyTextColor(Context context, Message message) {
+        return isMessageBubbleColorTooBright(context, message) ? ContextCompat.getColor(context, R.color.black87) : ContextCompat.getColor(context, R.color.white);
+    }
+
     public static int getMessageBodyTextAppearance(Context context, Message message){
-        return isMessageBubbleColored(context, message) && !isReceivedMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Body1_OnDark : R.style.TextAppearance_Conversations_Body1;
+        return isMessageBubbleColorTooBright(context, message) ?  R.style.TextAppearance_Conversations_Body1 : R.style.TextAppearance_Conversations_Body1_OnDark;
     }
 
     public static int getMessageBodySecondaryTextAppearance(Context context, Message message){
-        return isMessageBubbleColored(context, message) && !isReceivedMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Body1_Secondary_OnDark : R.style.TextAppearance_Conversations_Body1_Secondary;
+        return isMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Body1_Secondary : R.style.TextAppearance_Conversations_Body1_Secondary_OnDark;
     }
 
     public static int getMessageEmojiBodyTextAppearance(Context context, Message message){
-        return isMessageBubbleColored(context, message) && !isReceivedMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Body1_Emoji_OnDark : R.style.TextAppearance_Conversations_Body1_Emoji;
+        return isMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Body1_Emoji : R.style.TextAppearance_Conversations_Body1_Emoji_OnDark;
     }
 
     public static StyleSpan getMessageHighlightSpan(){
@@ -262,7 +265,7 @@ public class Theme {
     }
 
     public static int getReceivedMessageHighlightColor(Context context, Message message){
-        return getThemedColor(context, isMessageBubbleColored(context, message) && !isReceivedMessageBubbleColorTooBright(context, message) ? R.attr.message_bubble_received_colored_color : R.attr.message_bubble_received_color);
+        return getThemedColor(context, isMessageBubbleColored(context, message) && !isMessageBubbleColorTooBright(context, message) ? R.attr.message_bubble_received_colored_color : R.attr.message_bubble_received_color);
     }
 
     /** This is NOT the color of the text in a message bubble. */
@@ -271,11 +274,11 @@ public class Theme {
     }
 
     public static int getWarningCaptionTextAppearance(Context context, Message message){
-        return isMessageBubbleColored(context, message) && !isReceivedMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Caption_Warning_OnDark : R.style.TextAppearance_Conversations_Caption_Warning;
+        return isMessageBubbleColored(context, message) && !isMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Caption_Warning_OnDark : R.style.TextAppearance_Conversations_Caption_Warning;
     }
 
     public static int getCaptionTextAppearance(Context context, Message message){
-        return isMessageBubbleColored(context, message) && !isReceivedMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Caption_OnDark : R.style.TextAppearance_Conversations_Caption;
+        return isMessageBubbleColored(context, message) && !isMessageBubbleColorTooBright(context, message) ? R.style.TextAppearance_Conversations_Caption_OnDark : R.style.TextAppearance_Conversations_Caption;
     }
 
     //
@@ -301,7 +304,7 @@ public class Theme {
         if (!isThemeDark(context) && !isMessageBubbleColored(context, message)) {
             return getMessageQuoteTextColorForLightBackground(context);
         } else {
-            if (isReceivedMessageBubbleColorTooBright(context, message)) {
+            if (isMessageBubbleColorTooBright(context, message)) {
                 int col = getThemedColor(context, R.attr.message_primary_text_color);
                 int alpha = Color.alpha(col) - 76;
                 return ColorUtils.setAlphaComponent(col, alpha);
