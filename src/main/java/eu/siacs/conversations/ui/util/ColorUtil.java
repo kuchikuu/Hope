@@ -14,13 +14,13 @@ import android.graphics.Color;
 public class ColorUtil {
 
     /**
-     * Darkens a given color, but returns black (instead of a reddish tone)
-     * if input color is black.
+     * Darkens a given color, but returns black / white (instead of a reddish tone)
+     * if input color is black / white.
      *
      * @author millesimus
      */
     public static int safeDarken(int base, int amount) {
-        if (base == Color.parseColor("#000000")) {
+        if (base == Color.parseColor("#000000") || base == Color.parseColor("#ffffff")) {
             return base;
         }
         return darken(base, amount);
@@ -66,7 +66,7 @@ public class ColorUtil {
      */
     public static int safeDesaturate(int base, int amount) {
         int desaturated = desaturate(base, amount);
-        if (isHueDifferent(desaturated, base) || isLighterThan(desaturated, base)) {
+        if (isHueDifferent(desaturated, base) || isLighterThan(desaturated, base) || base == Color.parseColor("#ffffff")) {
             return base;
         }
         return desaturated;

@@ -322,7 +322,7 @@ public class Theme {
         return getMessageIcon(context, R.attr.ic_play_arrow, message);
     }
     public static int getAudioPlayerRuleColor(Context context){
-        return ColorUtil.desaturate(getPrimaryColor(context), 15);
+        return ColorUtil.safeDesaturate(getPrimaryColor(context), 15);
     }
 
     //
