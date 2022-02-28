@@ -7,9 +7,14 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
 
+import androidx.annotation.ColorInt;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -21,6 +26,7 @@ import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.ui.util.ColorUtil;
+import eu.siacs.conversations.utils.EmojiWrapper;
 import eu.siacs.conversations.utils.ThemeHelper;
 
 /**
@@ -64,6 +70,38 @@ public class Theme {
         return ContextCompat.getColor(context, getThemeResource(context, attr));
     }
 
+    /**
+     * @return decison whether a color is too bright (and thus should be contrasted by darker colors)
+     *
+     * Calculates difference between message bubble color and black / white for its decision. Thus
+     * it does not decide against the real, not purely black / white font colors, but this should
+     * make little difference.
+     *
+     * Based on W3C standard and logic thankfully taken from https://stackoverflow.com/a/3943023,
+     * but decreased sensitivity so that normal Conversations green would not be considered too bright.
+     */
+    private static boolean isColorTooBright(@ColorInt int color) {
+        List<Float> colorList = new ArrayList<>();
+        colorList.add((float) Color.red(color));
+        colorList.add((float) Color.green(color));
+        colorList.add((float) Color.blue(color));
+
+        for (int i = 0; i < colorList.size(); i++) {
+            float c = colorList.get(i);
+            colorList.set(i, (float) (c / 255.0));
+            c = colorList.get(i);
+            if (colorList.get(i) <= 0.03928) {
+                colorList.set(i, (float) (c / 12.92));
+            } else {
+                colorList.set(i, (float) Math.pow((c + 0.055) / 1.055, 2.4));
+            }
+        }
+
+        float L = (float) (0.2126 * colorList.get(0) + 0.7152 * colorList.get(1) + 0.0722 * colorList.get(2));
+
+       return L > (Math.sqrt(1.05 * 0.05) + 0.05); // W3C correct formula: L > (Math.sqrt(1.05 * 0.05) -0.05)
+    }
+
     //
     // GENERAL | Theme
     //
@@ -83,16 +121,157 @@ public class Theme {
         return ColorUtil.safeDarken(getPrimaryColor(context), 12);
     }
 
+    /**
+     * Get contrast color for dark background.
+     */
+    private static int getContrastLight(Context context) {
+        return ContextCompat.getColor(context, R.color.white);
+    }
+
+    /**
+     * Get contrast color for light background.
+     */
+    private static int getContrastDark(Context context) {
+        return ContextCompat.getColor(context, R.color.black87);
+    }
+
+    /**
+     * Get less intense contrast color for dark background.
+     */
+    private static int getSecondaryContrastLight(Context context) {
+        return ContextCompat.getColor(context, R.color.white70);
+    }
+
+    /**
+     * Get less intense contrast color for light background.
+     */
+    private static int getSecondaryContrastDark(Context context) {
+        return ContextCompat.getColor(context, R.color.black54);
+    }
+
     //
     // GENERAL | Theme | Action and status bars
     //
 
-    public static ColorDrawable getActionBarColor(Context context){
-        return new ColorDrawable(getPrimaryColor(context));
+    @ColorInt
+    private static int getActionBarColor(Context context){
+        return getPrimaryColor(context);
+    }
+
+    @ColorInt
+    private static int getActionBarTextandItemColor(Context context) {
+        return isActionBarColorTooBright(context) ? getSecondaryContrastDark(context) : getContrastLight(context);
+    }
+
+    private static boolean isActionBarColorTooBright(Context context) {
+        return isColorTooBright(getActionBarColor(context));
+    }
+
+    public static Drawable getTintedActionBarIconDrawable(Context context, Drawable icon) {
+        DrawableCompat.setTint(icon, getActionBarTextandItemColor(context));
+        return icon;
+    }
+
+    public static SpannableString getActionBarTitleSpan(Context context, String title) {
+        SpannableString s = new SpannableString(EmojiWrapper.transform(title));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getActionBarTextandItemColor(context));
+        s.setSpan(colorSpan, 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return s;
+    }
+
+    public static Toolbar getThemedActionBar(Toolbar bar, Context context) {
+        bar.setBackground(new ColorDrawable(getActionBarColor(context)));
+        SpannableString s = getActionBarTitleSpan(context, context.getResources().getString(R.string.app_name));
+        bar.setTitle(s);
+        bar.setNavigationIcon(getBackUpArrowIcon(context));
+        bar.setOverflowIcon(getMoreOptionsIcon(context));
+        return bar;
     }
 
     public static int getStatusBarColor(Context context){
         return getPrimaryDarkColor(context);
+    }
+
+    public static Drawable getBackUpArrowIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getMoreOptionsIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, androidx.appcompat.R.drawable.abc_ic_menu_overflow_material);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getQrCodeScanIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_qr_code_scan_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getCallIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_call_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getOngoingCallIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_phone_in_talk_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getMucDetailsIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_group_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getAddAccountIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_person_add_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getShareIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_share_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getChangePresenceIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_announcement_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getSearchActionIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_search_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getEditIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_edit_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getAddIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_add_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getImportBackupIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_cloud_download_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    //
+    // GENERAL | Theme | Action and status bars | Search
+    //
+
+    public static int getSearchActionTextColor(Context context) {
+        return getActionBarTextandItemColor(context);
+    }
+
+    public static int getSearchActionHintTextColor(Context context) {
+        return getActionBarTextandItemColor(context);
+    }
+
+    public static Drawable getSearchActionCursor(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.white_cursor);
+        return getTintedActionBarIconDrawable(context, icon);
     }
 
     //
@@ -119,13 +298,8 @@ public class Theme {
 
     /**
      * @return decision whether a message bubble is too bright for bright font.
-     * Calculates difference between message bubble color and black / white for its decision. Thus
-     * it does not decide against the real, not purely black / white font colors, but this should
-     * make little difference.
-     *
      * If theme is black, it always returns false, since black theme message bubbles are dark inside.
      *
-     * Based on W3C standard and logic thankfully taken from https://stackoverflow.com/a/3943023.
      */
     private static boolean isMessageBubbleColorTooBright(Context context, Message message) {
         if (isThemeBlack(context)) {
@@ -137,37 +311,7 @@ public class Theme {
             bubbleColor = getReceivedMessageBubbleColor(context, message);
         }
 
-        List<Float> colorList = new ArrayList<>();
-        colorList.add((float) Color.red(bubbleColor));
-        colorList.add((float) Color.green(bubbleColor));
-        colorList.add((float) Color.blue(bubbleColor));
-
-        for (int i = 0; i < colorList.size(); i++) {
-            float c = colorList.get(i);
-            colorList.set(i, (float) (c / 255.0));
-            c = colorList.get(i);
-            if (colorList.get(i) <= 0.03928) {
-                colorList.set(i, (float) (c / 12.92));
-            } else {
-                colorList.set(i, (float) Math.pow((c + 0.055) / 1.055, 2.4));
-            }
-        }
-
-        float L = (float) (0.2126 * colorList.get(0) + 0.7152 * colorList.get(1) + 0.0722 * colorList.get(2));
-
-        return L > (Math.sqrt(1.05 * 0.05) - 0.05);
-    }
-
-    /**
-     * Decides between theme attributes based on the "colored message bubble" user preference.
-     * @return Theme attribute integer.
-     */
-    private static int decideColor(Context context, int attrDefault, int attrOnColored, Message message) {
-        int colorAttr = attrDefault;
-        if (isMessageBubbleColored(context, message)) {
-            colorAttr = attrOnColored;
-        }
-        return colorAttr;
+        return isColorTooBright(bubbleColor);
     }
 
     /**
@@ -229,7 +373,7 @@ public class Theme {
     //
 
     private static int getMessageSecondaryTextColor(Context context, Message message) {
-        return isMessageBubbleColorTooBright(context, message) ? ContextCompat.getColor(context, R.color.black54) : ContextCompat.getColor(context, R.color.white70);
+        return isMessageBubbleColorTooBright(context, message) ? getSecondaryContrastDark(context) : getSecondaryContrastLight(context);
     }
 
     public static int getMessageStatusTextColor(Context context, Message message) {
@@ -237,7 +381,7 @@ public class Theme {
     }
 
     public static int getMessageBodyTextColor(Context context, Message message) {
-        return isMessageBubbleColorTooBright(context, message) ? ContextCompat.getColor(context, R.color.black87) : ContextCompat.getColor(context, R.color.white);
+        return isMessageBubbleColorTooBright(context, message) ? getContrastDark(context) : getContrastLight(context);
     }
 
     public static int getMessageBodyTextAppearance(Context context, Message message){
@@ -332,8 +476,17 @@ public class Theme {
     // CONVERSATIONS OVERVIEW
     //
 
-    public static int getFloatingActionButtonColor(Context context) {
+    public static Drawable getStartConversationFabIcon(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_chat_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static int getStartConversationFabColor(Context context) {
         return getPrimaryColor(context);
+    }
+
+    public static int getUnreadCountTextColor(Context context) {
+        return getActionBarTextandItemColor(context);
     }
 
     public static int getUnreadCountBackgroundColor(Context context) {
@@ -351,8 +504,25 @@ public class Theme {
     // CONVERSATIONS OVERVIEW | StartConversationActivity
     //
 
+    public static int getTabLayoutSelectedColor(Context context) {
+        return isActionBarColorTooBright(context) ? getContrastDark(context) : getContrastLight(context);
+    }
+
+    public static int getTabLayoutNormalColor(Context context) {
+        return isActionBarColorTooBright(context) ? getSecondaryContrastDark(context) : getSecondaryContrastLight(context);
+    }
+
     public static int getTabLayoutBackgroundColor(Context context) {
         return getPrimaryColor(context);
+    }
+
+    public static Drawable getSpeedDialButtonIconClosed(Context context) {
+        return getAddIcon(context);
+    }
+
+    public static Drawable getSpeedDialButtonIconOpened(Context context) {
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_action_cancel_launchersize);
+        return getTintedActionBarIconDrawable(context, icon);
     }
 
     public static int getSpeedDialButtonColorClosed(Context context) {
@@ -364,7 +534,7 @@ public class Theme {
     }
 
     public static int getSpeedDialItemImageColor(Context context) {
-        return ContextCompat.getColor(context, R.color.white);
+        return isActionBarColorTooBright(context) ? getContrastDark(context) : getContrastLight(context);
     }
 
     public static int getSpeedDialItemBackgroundColor(Context context) {
@@ -379,14 +549,18 @@ public class Theme {
         return getPrimaryDarkColor(context);
     }
     public static Drawable getVerticalScrollbarColorDrawable(Context context) {
-        return new ColorDrawable(getFloatingActionButtonColor(context));
+        return new ColorDrawable(getStartConversationFabColor(context));
     }
 
     //
     // BLOCKLIST
     //
     public static int getAddBlockedJidButtonColor(Context context) {
-        return getFloatingActionButtonColor(context);
+        return getStartConversationFabColor(context);
+    }
+
+    public static Drawable getAddBlockedJidButtonIcon(Context context) {
+        return getAddAccountIcon(context);
     }
 
     //
@@ -629,6 +803,24 @@ public class Theme {
 
     private static int getDefaultOfflineColor(Context context) {
         return ContextCompat.getColor(context, R.color.white70);
+    }
+
+    //
+    // ChooseContactActivity aka invite Contact
+    //
+
+    public static Drawable getChooseContactAddFabIcon(Context context){
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_person_add_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static Drawable getChooseContactForwardFabIcon(Context context){
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_forward_white_24dp);
+        return getTintedActionBarIconDrawable(context, icon);
+    }
+
+    public static int getChooseContactAddFabBackgroundColor(Context context){
+        return getStartConversationFabColor(context);
     }
 
     //

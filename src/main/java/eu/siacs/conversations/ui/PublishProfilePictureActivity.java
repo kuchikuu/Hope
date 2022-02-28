@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -89,10 +90,8 @@ public class PublishProfilePictureActivity extends XmppActivity implements XmppC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish_profile_picture);
-        setSupportActionBar(findViewById(R.id.toolbar));
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
         this.avatar = findViewById(R.id.account_image);

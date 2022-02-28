@@ -33,6 +33,7 @@ public class BlocklistActivity extends AbstractSearchableListItemActivity implem
 		this.binding.fab.show();
 		this.binding.fab.setOnClickListener((v)->showEnterJidDialog());
 		this.binding.fab.setBackgroundTintList(ColorStateList.valueOf(Theme.getAddBlockedJidButtonColor(this)));
+		this.binding.fab.setImageDrawable(Theme.getAddBlockedJidButtonIcon(this));
 	}
 
 	@Override

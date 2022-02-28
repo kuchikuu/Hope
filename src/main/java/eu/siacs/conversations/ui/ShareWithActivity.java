@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -87,14 +88,14 @@ public class ShareWithActivity extends XmppActivity implements XmppConnectionSer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_with);
 
-        setSupportActionBar(findViewById(R.id.toolbar));
-        ActionBar bar = getSupportActionBar();
-        if (bar != null) {
-            bar.setDisplayHomeAsUpEnabled(false);
-            bar.setHomeButtonEnabled(false);
-        }
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+//        setSupportActionBar(findViewById(R.id.toolbar));
+//        ActionBar bar = getSupportActionBar();
+//        if (bar != null) {
+//            bar.setDisplayHomeAsUpEnabled(false);
+//            bar.setHomeButtonEnabled(false);
+//        }
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
         setTitle(getString(R.string.title_activity_sharewith));
@@ -110,6 +111,8 @@ public class ShareWithActivity extends XmppActivity implements XmppConnectionSer
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.share_with, menu);
+        MenuItem add = menu.findItem(R.id.action_add);
+        add.setIcon(Theme.getAddIcon(this));
         return true;
     }
 

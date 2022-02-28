@@ -54,6 +54,8 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import org.openintents.openpgp.util.OpenPgpApi;
@@ -353,10 +355,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         ConversationMenuConfigurator.reloadFeatures(this);
         OmemoSetting.load(this);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_conversations);
-        setSupportActionBar(binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.getFragmentManager().addOnBackStackChangedListener(this::invalidateActionBarTitle);
         this.getFragmentManager().addOnBackStackChangedListener(this::showDialogsIfMainIsOverview);
@@ -379,6 +379,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         getMenuInflater().inflate(R.menu.activity_conversations, menu);
         final MenuItem qrCodeScanMenuItem = menu.findItem(R.id.action_scan_qr_code);
         if (qrCodeScanMenuItem != null) {
+            qrCodeScanMenuItem.setIcon(Theme.getQrCodeScanIcon(this));
             if (isCameraFeatureAvailable()) {
                 Fragment fragment = getFragmentManager().findFragmentById(R.id.main_fragment);
                 boolean visible = getResources().getBoolean(R.bool.show_qr_code_scan)
@@ -388,6 +389,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
                 qrCodeScanMenuItem.setVisible(false);
             }
         }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -567,10 +569,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         super.onResume();
         this.mActivityPaused = false;
 
-        setSupportActionBar(binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
     }
 
@@ -623,7 +623,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         if (mainFragment instanceof ConversationFragment) {
             final Conversation conversation = ((ConversationFragment) mainFragment).getConversation();
             if (conversation != null) {
-                actionBar.setTitle(conversation.getName());
+                actionBar.setTitle(Theme.getActionBarTitleSpan(this, conversation.getName().toString()));
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 ActionBarUtil.setActionBarOnClickListener(
                         binding.toolbar,
@@ -632,7 +632,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
                 return;
             }
         }
-        actionBar.setTitle(R.string.app_name);
+        actionBar.setTitle(Theme.getActionBarTitleSpan(this, this.getResources().getString(R.string.app_name)));
         actionBar.setDisplayHomeAsUpEnabled(false);
         ActionBarUtil.resetActionBarOnClickListeners(binding.toolbar);
     }

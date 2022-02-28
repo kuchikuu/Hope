@@ -11,6 +11,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -59,10 +60,8 @@ public class ShareLocationActivity extends LocationActivity implements LocationL
         super.onCreate(savedInstanceState);
 
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_share_location);
-        setSupportActionBar(binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         setupMapView(binding.map, LocationProvider.getGeoPoint(this));
 

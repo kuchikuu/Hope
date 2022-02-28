@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
 import eu.siacs.conversations.R;
 
@@ -50,10 +51,8 @@ public class TosActivity extends XmppActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tos);
-        setSupportActionBar(findViewById(R.id.toolbar));
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {

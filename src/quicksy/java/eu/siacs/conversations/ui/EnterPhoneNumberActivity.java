@@ -105,10 +105,8 @@ public class EnterPhoneNumberActivity extends XmppActivity implements QuickConve
         this.binding.countryCode.setCompoundDrawables(new TextDrawable(this.binding.countryCode, "+"), null, null, null);
         this.binding.country.setOnClickListener(this::onSelectCountryClick);
         this.binding.next.setOnClickListener(this::onNextClick);
-        setSupportActionBar((Toolbar) this.binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.binding.countryCode.addTextChangedListener(this.countryCodeTextWatcher);
         this.binding.countryCode.setText(String.valueOf(PhoneNumberUtilWrapper.getInstance(this).getCountryCodeForRegion(this.region)));

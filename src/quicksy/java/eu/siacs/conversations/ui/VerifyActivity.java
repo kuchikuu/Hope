@@ -101,10 +101,8 @@ public class VerifyActivity extends XmppActivity implements ClipboardManager.OnP
         this.retrySmsAfter = savedInstanceState != null ? savedInstanceState.getLong(EXTRA_RETRY_SMS_AFTER, 0L) : 0L;
         this.retryVerificationAfter = savedInstanceState != null ? savedInstanceState.getLong(EXTRA_RETRY_VERIFICATION_AFTER, 0L) : 0L;
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_verify);
-        setSupportActionBar((Toolbar) this.binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.pinEntryWrapper = new PinEntryWrapper(binding.pinBox);
         if (pin != null) {

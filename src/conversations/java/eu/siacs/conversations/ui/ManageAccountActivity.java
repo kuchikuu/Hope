@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 
 import org.openintents.openpgp.util.OpenPgpApi;
 
@@ -80,10 +81,8 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_manage_accounts);
-        setSupportActionBar(findViewById(R.id.toolbar));
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         if (savedInstanceState != null) {
             String jid = savedInstanceState.getString(STATE_SELECTED_ACCOUNT);
@@ -159,6 +158,7 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
         getMenuInflater().inflate(R.menu.manageaccounts, menu);
         MenuItem enableAll = menu.findItem(R.id.action_enable_all);
         MenuItem addAccount = menu.findItem(R.id.action_add_account);
+        addAccount.setIcon(Theme.getAddAccountIcon(this));
         MenuItem addAccountWithCertificate = menu.findItem(R.id.action_add_account_with_cert);
 
         if (Config.X509_VERIFICATION) {

@@ -45,6 +45,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -269,20 +270,21 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_start_conversation);
 
-        setSupportActionBar(binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
         inflateFab(binding.speedDial, R.menu.start_conversation_fab_submenu);
 
         binding.speedDial.setBackgroundTintList(ColorStateList.valueOf(Theme.getSpeedDialButtonColorOpened(this)));
+        binding.speedDial.setMainFabOpenedDrawable(Theme.getSpeedDialButtonIconOpened(this));
+        binding.speedDial.setMainFabClosedDrawable(Theme.getSpeedDialButtonIconClosed(this));
         binding.speedDial.setMainFabOpenedBackgroundColor(Theme.getSpeedDialButtonColorOpened(this));
         binding.speedDial.setMainFabClosedBackgroundColor(Theme.getSpeedDialButtonColorClosed(this));
 
         binding.tabLayout.setupWithViewPager(binding.startConversationViewPager);
         binding.tabLayout.setBackgroundColor(Theme.getTabLayoutBackgroundColor(this));
+        binding.tabLayout.setTabTextColors(Theme.getTabLayoutNormalColor(this), Theme.getTabLayoutSelectedColor(this));
 
         binding.startConversationViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -677,10 +679,14 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         }
         mMenuSearchView = menu.findItem(R.id.action_search);
         mMenuSearchView.setOnActionExpandListener(mOnActionExpandListener);
+        mMenuSearchView.setIcon(Theme.getSearchActionIcon(this));
         View mSearchView = mMenuSearchView.getActionView();
         mSearchEditText = mSearchView.findViewById(R.id.search_field);
         mSearchEditText.addTextChangedListener(mSearchTextWatcher);
         mSearchEditText.setOnEditorActionListener(mSearchDone);
+        mSearchEditText.setTextColor(Theme.getSearchActionTextColor(this));
+        mSearchEditText.setHintTextColor(Theme.getSearchActionHintTextColor(this));
+        // mSearchEditText.setTextCursorDrawable(Theme.getSearchActionCursor(this)); // requires api level 29
         String initialSearchValue = mInitialSearchValue.pop();
         if (initialSearchValue != null) {
             mMenuSearchView.expandActionView();

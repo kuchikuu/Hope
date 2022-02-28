@@ -86,10 +86,8 @@ public class ChooseCountryActivity extends ActionBarActivity implements CountryA
         super.onCreate(savedInstanceState);
         setTheme(ThemeHelper.find(this));
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_choose_country);
-        setSupportActionBar((Toolbar) this.binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.countries.addAll(PhoneNumberUtilWrapper.getCountries(this));
         Collections.sort(this.countries);

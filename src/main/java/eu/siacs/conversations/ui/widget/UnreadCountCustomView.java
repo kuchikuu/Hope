@@ -48,7 +48,7 @@ public class UnreadCountCustomView extends View {
         paint.setColor(backgroundColor);
         paint.setAntiAlias(true);
         textPaint = new Paint();
-        textPaint.setColor(Color.WHITE);
+        textPaint.setColor(Theme.getUnreadCountTextColor(getContext()));
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setAntiAlias(true);
         textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
@@ -64,7 +64,6 @@ public class UnreadCountCustomView extends View {
         textPaint.setTextSize(0.95f * radius);
         canvas.drawCircle(midx, midy, radius * 0.94f, paint);
         canvas.drawText(unreadCount > 999 ? "\u221E" : String.valueOf(unreadCount), midx, midy + textOffset, textPaint);
-
     }
 
     public void setUnreadCount(int unreadCount) {

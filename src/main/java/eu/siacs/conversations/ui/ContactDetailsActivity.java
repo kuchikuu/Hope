@@ -29,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import org.openintents.openpgp.util.OpenPgpUtils;
@@ -216,10 +217,8 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         this.messageFingerprint = getIntent().getStringExtra("fingerprint");
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_contact_details);
 
-        setSupportActionBar(binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         binding.showInactiveDevices.setOnClickListener(v -> {
             showInactiveOmemo = !showInactiveOmemo;
@@ -327,6 +326,9 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         MenuItem block = menu.findItem(R.id.action_block);
         MenuItem unblock = menu.findItem(R.id.action_unblock);
         MenuItem edit = menu.findItem(R.id.action_edit_contact);
+        edit.setIcon(Theme.getEditIcon(this));
+        MenuItem share = menu.findItem(R.id.action_share);
+        share.setIcon(Theme.getShareIcon(this));
         MenuItem delete = menu.findItem(R.id.action_delete_contact);
         if (contact == null) {
             return true;

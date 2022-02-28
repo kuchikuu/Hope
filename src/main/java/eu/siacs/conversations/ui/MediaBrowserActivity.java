@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import java.util.List;
@@ -31,10 +32,8 @@ public class MediaBrowserActivity extends XmppActivity implements OnMediaLoaded 
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this,R.layout.activity_media_browser);
 
-        setSupportActionBar(binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
         // programmatically themed scrollbar colours depend on:

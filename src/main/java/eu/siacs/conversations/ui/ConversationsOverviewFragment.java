@@ -46,7 +46,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -72,7 +71,6 @@ import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingActionHelper;
 import eu.siacs.conversations.ui.util.PendingItem;
 import eu.siacs.conversations.ui.util.ScrollState;
-import eu.siacs.conversations.ui.util.StyledAttributes;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.EasyOnboardingInvite;
 import eu.siacs.conversations.utils.ThemeHelper;
@@ -290,7 +288,8 @@ public class ConversationsOverviewFragment extends XmppFragment {
 		this.mSwipeEscapeVelocity = getResources().getDimension(R.dimen.swipe_escape_velocity);
 		this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_conversations_overview, container, false);
 		this.binding.fab.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
-		this.binding.fab.setBackgroundTintList(ColorStateList.valueOf(Theme.getFloatingActionButtonColor(activity)));
+		this.binding.fab.setImageDrawable(Theme.getStartConversationFabIcon(activity));
+		this.binding.fab.setBackgroundTintList(ColorStateList.valueOf(Theme.getStartConversationFabColor(activity)));
 
 		// programmatically themed scrollbar colours depend on:
 		if (android.os.Build.VERSION.SDK_INT >= 29) {
@@ -362,7 +361,7 @@ public class ConversationsOverviewFragment extends XmppFragment {
 		super.onResume();
 		Log.d(Config.LOGTAG, "ConversationsOverviewFragment.onResume()");
 
-		this.binding.fab.setBackgroundTintList(ColorStateList.valueOf(Theme.getFloatingActionButtonColor(activity)));
+		this.binding.fab.setBackgroundTintList(ColorStateList.valueOf(Theme.getStartConversationFabColor(activity)));
 
 		// programmatically themed scrollbar colours depend on:
 		if (android.os.Build.VERSION.SDK_INT >= 29) {

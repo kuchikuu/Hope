@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
@@ -83,10 +84,8 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
                 .getDecorView()
                 .setBackgroundColor(
                         StyledAttributes.getColor(this, R.attr.color_background_primary));
-		setSupportActionBar(findViewById(R.id.toolbar));
-		ActionBar bar = getSupportActionBar();
-		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-		configureActionBar(bar);
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
 		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
     }
 
@@ -474,10 +473,8 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
                 recreate();
             }
         } else if (name.equals(CUSTOM_COLOR_PRIMARY)) {
-			setSupportActionBar(findViewById(R.id.toolbar));
-			ActionBar bar = getSupportActionBar();
-			bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-			configureActionBar(bar);
+			Toolbar bar = findViewById(R.id.toolbar);
+			setSupportActionBar(Theme.getThemedActionBar(bar, this));
 			getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 		} else if (name.equals(PREVENT_SCREENSHOTS)) {
             SettingsUtils.applyScreenshotPreventionSetting(this);
@@ -489,10 +486,8 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
 		super.onResume();
 		SettingsUtils.applyScreenshotPreventionSetting(this);
 
-		setSupportActionBar(findViewById(R.id.toolbar));
-		ActionBar bar = getSupportActionBar();
-		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-		configureActionBar(bar);
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
 		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 	}
 

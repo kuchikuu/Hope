@@ -16,6 +16,7 @@ import android.view.View;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
@@ -50,10 +51,8 @@ public class ImportBackupActivity extends ActionBarActivity implements ServiceCo
         setTheme(this.mTheme);
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_import_backup);
-        setSupportActionBar(binding.toolbar);
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-        configureActionBar(bar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
         getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         setLoadingState(savedInstanceState != null && savedInstanceState.getBoolean("loading_state", false));
         this.backupFileAdapter = new BackupFileAdapter();
@@ -71,6 +70,7 @@ public class ImportBackupActivity extends ActionBarActivity implements ServiceCo
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.import_backup, menu);
         final MenuItem openBackup = menu.findItem(R.id.action_open_backup_file);
+        openBackup.setIcon(Theme.getImportBackupIcon(this));
         openBackup.setVisible(!this.mLoadingState);
         return true;
     }

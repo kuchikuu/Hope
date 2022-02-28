@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import org.osmdroid.util.GeoPoint;
@@ -50,10 +51,8 @@ public class ShowLocationActivity extends LocationActivity implements LocationLi
 
 		this.binding = DataBindingUtil.setContentView(this,R.layout.activity_show_location);
 
-		setSupportActionBar(binding.toolbar);
-		ActionBar bar = getSupportActionBar();
-		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-		configureActionBar(bar);
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
 		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
 		setupMapView(this.binding.map, this.loc);

@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -63,10 +64,8 @@ public class ChangePasswordActivity extends XmppActivity implements XmppConnecti
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_change_password);
-		setSupportActionBar(findViewById(R.id.toolbar));
-		ActionBar bar = getSupportActionBar();
-		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-		configureActionBar(bar);
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
 		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 		Button mCancelButton = findViewById(R.id.left_button);
 		mCancelButton.setOnClickListener(view -> finish());

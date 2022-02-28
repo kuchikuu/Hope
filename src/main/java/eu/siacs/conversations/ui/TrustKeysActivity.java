@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import org.whispersystems.libsignal.IdentityKey;
@@ -82,10 +83,8 @@ public class TrustKeysActivity extends OmemoActivity implements OnKeyStatusUpdat
 		binding.cancelButton.setOnClickListener(mCancelButtonListener);
 		binding.saveButton.setOnClickListener(mSaveButtonListener);
 
-		setSupportActionBar(binding.toolbar);
-		ActionBar bar = getSupportActionBar();
-		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-		configureActionBar(bar);
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
 		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
 		if (savedInstanceState != null) {

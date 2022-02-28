@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import java.util.ArrayList;
@@ -93,10 +94,8 @@ public abstract class AbstractSearchableListItemActivity extends XmppActivity im
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.binding = DataBindingUtil.setContentView(this,R.layout.activity_choose_contact);
-		setSupportActionBar(binding.toolbar);
-		ActionBar bar = getSupportActionBar();
-		bar.setBackgroundDrawable(Theme.getActionBarColor(this));
-		configureActionBar(bar);
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
 		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 		this.binding.chooseContactList.setFastScrollEnabled(true);
 		mListItemsAdapter = new ListItemAdapter(this, listItems);
@@ -107,11 +106,14 @@ public abstract class AbstractSearchableListItemActivity extends XmppActivity im
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.choose_contact, menu);
 		final MenuItem menuSearchView = menu.findItem(R.id.action_search);
+		menuSearchView.setIcon(Theme.getSearchActionIcon(this));
 		final View mSearchView = menuSearchView.getActionView();
 		mSearchEditText = mSearchView.findViewById(R.id.search_field);
 		mSearchEditText.addTextChangedListener(mSearchTextWatcher);
 		mSearchEditText.setHint(R.string.search_contacts);
 		mSearchEditText.setOnEditorActionListener(this);
+		mSearchEditText.setHintTextColor(Theme.getSearchActionHintTextColor(this));
+		mSearchEditText.setTextColor(Theme.getSearchActionTextColor(this));
 		menuSearchView.setOnActionExpandListener(mOnActionExpandListener);
 		return true;
 	}
