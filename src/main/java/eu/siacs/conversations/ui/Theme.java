@@ -26,7 +26,6 @@ import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.ui.util.ColorUtil;
-import eu.siacs.conversations.utils.EmojiWrapper;
 import eu.siacs.conversations.utils.ThemeHelper;
 
 /**
@@ -173,7 +172,7 @@ public class Theme {
     }
 
     public static SpannableString getActionBarTitleSpan(Context context, String title) {
-        SpannableString s = new SpannableString(EmojiWrapper.transform(title));
+        SpannableString s = new SpannableString(title);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(getActionBarTextandItemColor(context));
         s.setSpan(colorSpan, 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return s;
