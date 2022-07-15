@@ -60,6 +60,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.prefs.PreferenceChangeEvent;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
@@ -887,8 +888,14 @@ public abstract class XmppActivity extends ActionBarActivity {
             cancelPotentialWork(message, imageView);
             imageView.setImageDrawable(bm);
             imageView.setBackgroundColor(0x00000000);
+            SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(imageView.getContext());
             if (Build.VERSION.SDK_INT >= 28 && bm instanceof AnimatedImageDrawable) {
-                ((AnimatedImageDrawable) bm).start();
+                if (p.getBoolean("animate_gifs", true)) {
+                    ((AnimatedImageDrawable) bm).start();
+                } else {
+                    ((AnimatedImageDrawable) bm).stop();
+                    bm.setLevel(0);
+                }
             }
         } else {
             if (cancelPotentialWork(message, imageView)) {
@@ -976,8 +983,15 @@ public abstract class XmppActivity extends ActionBarActivity {
                 if (imageView != null) {
                     imageView.setImageDrawable(drawable);
                     imageView.setBackgroundColor(drawable == null ? 0xff333333 : 0x00000000);
+
+                    SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(imageView.getContext());
                     if (Build.VERSION.SDK_INT >= 28 && drawable instanceof AnimatedImageDrawable) {
-                        ((AnimatedImageDrawable) drawable).start();
+                        if (p.getBoolean("animate_gifs", true)) {
+                            ((AnimatedImageDrawable) drawable).start();
+                        } else {
+                            ((AnimatedImageDrawable) drawable).stop();
+                            drawable.setLevel(0);
+                        }
                     }
                 }
             }
