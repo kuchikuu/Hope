@@ -51,20 +51,16 @@ public class ShowLocationActivity extends LocationActivity implements LocationLi
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_show_location);
         setSupportActionBar(binding.toolbar);
 
-<<<<<<< HEAD
         configureActionBar(getSupportActionBar());
         setupMapView(this.binding.map, this.loc);
 
         this.binding.fab.setOnClickListener(view -> startNavigation());
-=======
 		this.binding = DataBindingUtil.setContentView(this,R.layout.activity_show_location);
-
 		Toolbar bar = findViewById(R.id.toolbar);
 		setSupportActionBar(Theme.getThemedActionBar(bar, this));
 		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
 		setupMapView(this.binding.map, this.loc);
->>>>>>> feature_customisable_theme
 
         final Intent intent = getIntent();
         if (intent != null) {

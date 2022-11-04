@@ -988,10 +988,8 @@
     <string name="account_status_temporary_auth_failure">Temporary authentication failure</string>
     <string name="delete_avatar">Delete avatar</string>
     <string name="audio_video_disabled_tor">Calls are disabled when using Tor</string>
-<<<<<<< HEAD
     <string name="pref_animate_gifs">Play GIFs</string>
     <string name="pref_animate_gifs_description">Play GIFs automatically (requires Android 9 or higher)</string>
-=======
     <string name="pref_custom_theme">Customise theme</string>
     <string name="pref_custom_theme_primary_color_picker_title">Primary Color Picker</string>
     <string name="pref_custom_theme_primary_color_picker_summary">Pick a primary color.</string>

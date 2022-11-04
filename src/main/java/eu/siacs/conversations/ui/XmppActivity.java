@@ -55,10 +55,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
-<<<<<<< HEAD
-=======
 import androidx.core.graphics.drawable.DrawableCompat;
->>>>>>> feature_customisable_theme
 import androidx.databinding.DataBindingUtil;
 
 import com.google.common.base.Strings;

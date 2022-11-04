@@ -90,12 +90,9 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     private final DisplayMetrics metrics;
     private OnContactPictureClicked mOnContactPictureClickedListener;
     private OnContactPictureLongClicked mOnContactPictureLongClickedListener;
-<<<<<<< HEAD
     private boolean mUseGreenBackground = false;
     private final boolean mForceNames;
-=======
     private boolean mUseColoredBackground = false;
->>>>>>> feature_customisable_theme
 
     public MessageAdapter(final XmppActivity activity, final List<Message> messages, final boolean forceNames) {
         super(activity, 0, messages);

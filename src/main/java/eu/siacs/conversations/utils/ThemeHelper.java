@@ -159,7 +159,6 @@ public class ThemeHelper {
 		}
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Calculate pixels relative to density.
 	 *
@@ -170,7 +169,7 @@ public class ThemeHelper {
 	public static int dp2Px(Context context, int dp){
 		float scale = context.getResources().getDisplayMetrics().density;
 		return (int) (dp * scale + 0.5f);
-=======
+	}
 	private static String getThemeId(final SharedPreferences sharedPreferences, final Resources resources) {
 		String themeId = sharedPreferences.getString(SettingsActivity.THEME, resources.getString(R.string.theme));
 		if (themeId.equals("automatic")){
@@ -186,6 +185,5 @@ public class ThemeHelper {
 			}
 		}
 		return "light";
->>>>>>> feature_customisable_theme
 	}
 }

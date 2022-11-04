@@ -97,16 +97,13 @@ public class SearchActivity extends XmppActivity implements TextWatcher, OnSearc
 		}
 		super.onCreate(bundle);
 		this.binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
-<<<<<<< HEAD
 		setSupportActionBar(this.binding.toolbar);
 		configureActionBar(getSupportActionBar());
 		this.messageListAdapter = new MessageAdapter(this, this.messages, uuid == null);
-=======
 		Toolbar bar = findViewById(R.id.toolbar);
 		setSupportActionBar(Theme.getThemedActionBar(bar, this));
 		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 		this.messageListAdapter = new MessageAdapter(this, this.messages);
->>>>>>> feature_customisable_theme
 		this.messageListAdapter.setOnContactPictureClicked(this);
 		this.binding.searchResults.setAdapter(messageListAdapter);
 		registerForContextMenu(this.binding.searchResults);
