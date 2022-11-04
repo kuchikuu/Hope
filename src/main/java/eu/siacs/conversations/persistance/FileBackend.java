@@ -962,7 +962,7 @@ public class FileBackend {
                 }
                 DownloadableFile file = getFile(message);
                 final String mime = file.getMimeType();
-                if ("application/pdf".equals(mime) && Compatibility.runsTwentyOne()) {
+                if ("application/pdf".equals(mime)) {
                     thumbnail = new BitmapDrawable(res, getPdfDocumentPreview(file, size));
                 } else if (mime.startsWith("video/")) {
                     thumbnail = new BitmapDrawable(res, getVideoPreview(file, size));

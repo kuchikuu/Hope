@@ -95,9 +95,9 @@ android {
         versionCode 42038
         versionName "2.10.10"
         archivesBaseName += "-$versionName"
-        applicationId "eu.siacs.conversations"
+        applicationId "pl.kuchikuu.hope"
         resValue "string", "applicationId", applicationId
-        def appName = "Conversations"
+        def appName = "Hope"
         resValue "string", "app_name", appName
         buildConfigField "String", "APP_NAME", "\"$appName\"";
     }
