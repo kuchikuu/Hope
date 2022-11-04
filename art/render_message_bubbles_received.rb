@@ -14,11 +14,16 @@ resolutions = {
 	}
 
 images = {
+<<<<<<< HEAD
     'message_bubble_received.svg' => ['message_bubble_received.9', 0],
     'message_bubble_received_dark.svg' => ['message_bubble_received_dark.9', 0],
     'message_bubble_received_grey.svg' => ['message_bubble_received_grey.9', 0],
     'message_bubble_received_warning.svg' => ['message_bubble_warning_white.9', 0],
 	'message_bubble_received_white.svg' => ['message_bubble_received_white.9', 0],
+=======
+	'message_bubble_received_white.svg' => ['message_bubble_received_white.9', 0],
+    'message_bubble_received_outline.svg' => ['message_bubble_received_outline.9', 0],
+>>>>>>> feature_customisable_theme
 	}
 
 # Executable paths for Mac OSX

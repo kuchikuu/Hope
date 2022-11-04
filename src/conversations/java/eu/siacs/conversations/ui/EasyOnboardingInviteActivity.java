@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.common.base.Strings;
@@ -34,8 +36,9 @@ public class EasyOnboardingInviteActivity extends XmppActivity implements EasyOn
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_easy_invite);
-        setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar(), true);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.binding.shareButton.setOnClickListener(v -> share());
         if (bundle != null && bundle.containsKey("invite")) {
             this.easyOnboardingInvite = bundle.getParcelable("invite");

@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -604,7 +605,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             this.mSavedInstanceInit = savedInstanceState.getBoolean("initMode", false);
         }
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_account);
-        setSupportActionBar(binding.toolbar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         binding.accountJid.addTextChangedListener(this.mTextWatcher);
         binding.accountJid.setOnFocusChangeListener(this.mEditTextFocusListener);
         this.binding.accountPassword.addTextChangedListener(this.mTextWatcher);
@@ -653,7 +656,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         final MenuItem renewCertificate = menu.findItem(R.id.action_renew_certificate);
         final MenuItem mamPrefs = menu.findItem(R.id.action_mam_prefs);
         final MenuItem changePresence = menu.findItem(R.id.action_change_presence);
+        changePresence.setIcon(Theme.getChangePresenceIcon(this));
         final MenuItem share = menu.findItem(R.id.action_share);
+        share.setIcon(Theme.getShareIcon(this));
         renewCertificate.setVisible(mAccount != null && mAccount.getPrivateKeyAlias() != null);
 
         share.setVisible(mAccount != null && !mInitMode);

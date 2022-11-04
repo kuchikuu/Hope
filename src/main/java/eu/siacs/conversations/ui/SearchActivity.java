@@ -42,6 +42,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.common.base.Strings;
@@ -95,9 +97,16 @@ public class SearchActivity extends XmppActivity implements TextWatcher, OnSearc
 		}
 		super.onCreate(bundle);
 		this.binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
+<<<<<<< HEAD
 		setSupportActionBar(this.binding.toolbar);
 		configureActionBar(getSupportActionBar());
 		this.messageListAdapter = new MessageAdapter(this, this.messages, uuid == null);
+=======
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
+		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
+		this.messageListAdapter = new MessageAdapter(this, this.messages);
+>>>>>>> feature_customisable_theme
 		this.messageListAdapter.setOnContactPictureClicked(this);
 		this.binding.searchResults.setAdapter(messageListAdapter);
 		registerForContextMenu(this.binding.searchResults);
@@ -107,6 +116,7 @@ public class SearchActivity extends XmppActivity implements TextWatcher, OnSearc
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_search, menu);
 		final MenuItem searchActionMenuItem = menu.findItem(R.id.action_search);
+		searchActionMenuItem.setIcon(Theme.getSearchActionIcon(this));
 		final EditText searchField = searchActionMenuItem.getActionView().findViewById(R.id.search_field);
 		final String term = pendingSearchTerm.pop();
 		if (term != null) {
@@ -124,6 +134,9 @@ public class SearchActivity extends XmppActivity implements TextWatcher, OnSearc
 		searchField.setHint(R.string.search_messages);
 		searchField.setContentDescription(getString(R.string.search_messages));
 		searchField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+		searchField.setTextColor(Theme.getSearchActionTextColor(this));
+		searchField.setHintTextColor(Theme.getSearchActionHintTextColor(this));
+		// searchField.setTextCursorDrawable(Theme.getSearchActionCursor(this)); // would require api level 29
 		if (term == null) {
 			showKeyboard(searchField);
 		}

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -268,11 +269,23 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_start_conversation);
-        setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar());
+
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
 
         inflateFab(binding.speedDial, R.menu.start_conversation_fab_submenu);
+
+        binding.speedDial.setBackgroundTintList(ColorStateList.valueOf(Theme.getSpeedDialButtonColorOpened(this)));
+        binding.speedDial.setMainFabOpenedDrawable(Theme.getSpeedDialButtonIconOpened(this));
+        binding.speedDial.setMainFabClosedDrawable(Theme.getSpeedDialButtonIconClosed(this));
+        binding.speedDial.setMainFabOpenedBackgroundColor(Theme.getSpeedDialButtonColorOpened(this));
+        binding.speedDial.setMainFabClosedBackgroundColor(Theme.getSpeedDialButtonColorClosed(this));
+
         binding.tabLayout.setupWithViewPager(binding.startConversationViewPager);
+        binding.tabLayout.setBackgroundColor(Theme.getTabLayoutBackgroundColor(this));
+        binding.tabLayout.setTabTextColors(Theme.getTabLayoutNormalColor(this), Theme.getTabLayoutSelectedColor(this));
+
         binding.startConversationViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -351,7 +364,8 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
             final MenuItem menuItem = menu.getItem(i);
             final SpeedDialActionItem actionItem = new SpeedDialActionItem.Builder(menuItem.getItemId(), menuItem.getIcon())
                     .setLabel(menuItem.getTitle() != null ? menuItem.getTitle().toString() : null)
-                    .setFabImageTintColor(ContextCompat.getColor(this, R.color.white))
+                    .setFabImageTintColor(Theme.getSpeedDialItemImageColor(this))
+                    .setFabBackgroundColor(Theme.getSpeedDialItemBackgroundColor(this))
                     .create();
             speedDialView.addActionItem(actionItem);
         }
@@ -665,10 +679,14 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         }
         mMenuSearchView = menu.findItem(R.id.action_search);
         mMenuSearchView.setOnActionExpandListener(mOnActionExpandListener);
+        mMenuSearchView.setIcon(Theme.getSearchActionIcon(this));
         View mSearchView = mMenuSearchView.getActionView();
         mSearchEditText = mSearchView.findViewById(R.id.search_field);
         mSearchEditText.addTextChangedListener(mSearchTextWatcher);
         mSearchEditText.setOnEditorActionListener(mSearchDone);
+        mSearchEditText.setTextColor(Theme.getSearchActionTextColor(this));
+        mSearchEditText.setHintTextColor(Theme.getSearchActionHintTextColor(this));
+        // mSearchEditText.setTextCursorDrawable(Theme.getSearchActionCursor(this)); // requires api level 29
         String initialSearchValue = mInitialSearchValue.pop();
         if (initialSearchValue != null) {
             mMenuSearchView.expandActionView();

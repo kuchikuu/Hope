@@ -13,6 +13,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import java.util.ArrayList;
@@ -90,8 +92,16 @@ public class MucUsersActivity extends XmppActivity implements XmppConnectionServ
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityMucUsersBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_muc_users);
-        setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar(), true);
+
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
+
+        // programmatically themed scrollbar colours depend on:
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            binding.list.setVerticalScrollbarThumbDrawable(Theme.getVerticalScrollbarColorDrawable(this));
+        }
+
         this.userAdapter = new UserAdapter(getPreferences().getBoolean("advanced_muc_mode", false));
         binding.list.setAdapter(this.userAdapter);
     }

@@ -20,7 +20,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
@@ -46,18 +48,19 @@ import eu.siacs.conversations.xmpp.Jid;
 
 public class SettingsActivity extends XmppActivity implements OnSharedPreferenceChangeListener {
 
-    public static final String KEEP_FOREGROUND_SERVICE = "enable_foreground_service";
-    public static final String AWAY_WHEN_SCREEN_IS_OFF = "away_when_screen_off";
-    public static final String TREAT_VIBRATE_AS_SILENT = "treat_vibrate_as_silent";
-    public static final String DND_ON_SILENT_MODE = "dnd_on_silent_mode";
-    public static final String MANUALLY_CHANGE_PRESENCE = "manually_change_presence";
-    public static final String BLIND_TRUST_BEFORE_VERIFICATION = "btbv";
-    public static final String AUTOMATIC_MESSAGE_DELETION = "automatic_message_deletion";
-    public static final String BROADCAST_LAST_ACTIVITY = "last_activity";
-    public static final String THEME = "theme";
-    public static final String SHOW_DYNAMIC_TAGS = "show_dynamic_tags";
-    public static final String OMEMO_SETTING = "omemo";
-    public static final String PREVENT_SCREENSHOTS = "prevent_screenshots";
+	public static final String KEEP_FOREGROUND_SERVICE = "enable_foreground_service";
+	public static final String AWAY_WHEN_SCREEN_IS_OFF = "away_when_screen_off";
+	public static final String TREAT_VIBRATE_AS_SILENT = "treat_vibrate_as_silent";
+	public static final String DND_ON_SILENT_MODE = "dnd_on_silent_mode";
+	public static final String MANUALLY_CHANGE_PRESENCE = "manually_change_presence";
+	public static final String BLIND_TRUST_BEFORE_VERIFICATION = "btbv";
+	public static final String AUTOMATIC_MESSAGE_DELETION = "automatic_message_deletion";
+	public static final String BROADCAST_LAST_ACTIVITY = "last_activity";
+	public static final String THEME = "theme";
+	public static final String CUSTOM_COLOR_PRIMARY = "custom_colorPrimaryInt";
+	public static final String SHOW_DYNAMIC_TAGS = "show_dynamic_tags";
+	public static final String OMEMO_SETTING = "omemo";
+	public static final String PREVENT_SCREENSHOTS = "prevent_screenshots";
 
     public static final int REQUEST_CREATE_BACKUP = 0xbf8701;
 
@@ -81,8 +84,9 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
                 .getDecorView()
                 .setBackgroundColor(
                         StyledAttributes.getColor(this, R.attr.color_background_primary));
-        setSupportActionBar(findViewById(R.id.toolbar));
-        configureActionBar(getSupportActionBar());
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
+		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
     }
 
     @Override
@@ -298,7 +302,18 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
             deleteOmemoPreference.setOnPreferenceClickListener(
                     preference -> deleteOmemoIdentities());
         }
-    }
+
+		final Preference resetCustomTheme = mSettingsFragment.findPreference("customise_theming_reset");
+		if (resetCustomTheme != null) {
+			resetCustomTheme.setOnPreferenceClickListener(preference -> {
+					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+					SharedPreferences.Editor editor = settings.edit();
+					editor.remove("custom_colorPrimaryInt");
+					editor.apply();
+				return true;
+			});
+		}
+	}
 
     private void changeOmemoSettingSummary() {
         ListPreference omemoPreference =
@@ -457,16 +472,24 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
             if (this.mTheme != theme) {
                 recreate();
             }
-        } else if (name.equals(PREVENT_SCREENSHOTS)) {
+        } else if (name.equals(CUSTOM_COLOR_PRIMARY)) {
+			Toolbar bar = findViewById(R.id.toolbar);
+			setSupportActionBar(Theme.getThemedActionBar(bar, this));
+			getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
+		} else if (name.equals(PREVENT_SCREENSHOTS)) {
             SettingsUtils.applyScreenshotPreventionSetting(this);
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        SettingsUtils.applyScreenshotPreventionSetting(this);
-    }
+	@Override
+	public void onResume(){
+		super.onResume();
+		SettingsUtils.applyScreenshotPreventionSetting(this);
+
+		Toolbar bar = findViewById(R.id.toolbar);
+		setSupportActionBar(Theme.getThemedActionBar(bar, this));
+		getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
+	}
 
     @Override
     public void onRequestPermissionsResult(

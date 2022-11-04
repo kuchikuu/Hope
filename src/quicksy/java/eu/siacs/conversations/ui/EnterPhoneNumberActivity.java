@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
@@ -104,7 +105,9 @@ public class EnterPhoneNumberActivity extends XmppActivity implements QuickConve
         this.binding.countryCode.setCompoundDrawables(new TextDrawable(this.binding.countryCode, "+"), null, null, null);
         this.binding.country.setOnClickListener(this::onSelectCountryClick);
         this.binding.next.setOnClickListener(this::onNextClick);
-        setSupportActionBar((Toolbar) this.binding.toolbar);
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
         this.binding.countryCode.addTextChangedListener(this.countryCodeTextWatcher);
         this.binding.countryCode.setText(String.valueOf(PhoneNumberUtilWrapper.getInstance(this).getCountryCodeForRegion(this.region)));
         this.binding.number.setOnKeyListener((v, keyCode, event) -> {

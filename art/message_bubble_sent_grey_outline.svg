@@ -18,10 +18,17 @@
   <defs
      id="defs4">
     <filter
+<<<<<<< HEAD
        x="-0.06"
        y="-0.06"
        width="1.12"
        height="1.17"
+=======
+       x="-0.060714286"
+       y="-0.085"
+       width="1.1466824"
+       height="1.22"
+>>>>>>> feature_customisable_theme
        inkscape:label="Drop Shadow"
        id="filter3811"
        color-interpolation-filters="sRGB">
@@ -60,6 +67,7 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
+<<<<<<< HEAD
      inkscape:zoom="16"
      inkscape:cx="6.28125"
      inkscape:cy="16.09375"
@@ -69,6 +77,17 @@
      inkscape:window-width="2560"
      inkscape:window-height="1375"
      inkscape:window-x="1920"
+=======
+     inkscape:zoom="32"
+     inkscape:cx="14.578125"
+     inkscape:cy="11.984375"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3759"
+     showgrid="true"
+     inkscape:window-width="1796"
+     inkscape:window-height="1051"
+     inkscape:window-x="124"
+>>>>>>> feature_customisable_theme
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      showguides="true"
@@ -140,15 +159,22 @@
      transform="translate(0,-2)">
     <g
        id="g3759"
+<<<<<<< HEAD
        style="fill:#424242;fill-opacity:1;fill-rule:nonzero;stroke:none;filter:url(#filter3811)">
       <path
          style="display:none;fill:#424242;fill-opacity:1"
+=======
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#424242;stroke-opacity:1;filter:url(#filter3811)">
+      <path
+         style="display:none;fill:none;fill-opacity:1;stroke:#424242;stroke-opacity:1"
+>>>>>>> feature_customisable_theme
          d="M 28,18 C 26,16 24,12 24,8 l -4,10 z"
          id="path3809"
          inkscape:connector-curvature="0"
          transform="translate(0,2)"
          sodipodi:nodetypes="cccc" />
       <path
+<<<<<<< HEAD
          inkscape:connector-curvature="0"
          id="path2989"
          d="M 20,12 V 24 H 32 Z"
@@ -162,6 +188,12 @@
          width="20"
          id="rect2987"
          style="fill:#424242;fill-opacity:0.25;stroke:#424242;stroke-opacity:1" />
+=======
+         id="path2989"
+         style="fill:#424242;fill-opacity:0.2;stroke:#424242;stroke-opacity:1"
+         d="M 6,2 C 4.892,2 4,2.892 4,4 v 16 c 0,1.108 0.892,2 2,2 h 14 2 10 L 24,14 V 4 C 24,2.892 23.108,2 22,2 Z"
+         transform="translate(0,2)" />
+>>>>>>> feature_customisable_theme
     </g>
   </g>
 </svg>

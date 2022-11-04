@@ -8,6 +8,8 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import java.security.SecureRandom;
@@ -61,8 +63,11 @@ public class MagicCreateActivity extends XmppActivity implements TextWatcher {
         }
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.magic_create);
-        setSupportActionBar(this.binding.toolbar);
-        configureActionBar(getSupportActionBar(), this.domain == null);
+
+        Toolbar bar = findViewById(R.id.toolbar);
+        setSupportActionBar(Theme.getThemedActionBar(bar, this));
+        getWindow().setStatusBarColor(Theme.getStatusBarColor(this));
+
         if (username != null && domain != null) {
             binding.title.setText(R.string.your_server_invitation);
             binding.instructions.setText(getString(R.string.magic_create_text_fixed, domain));

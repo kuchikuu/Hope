@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -13,12 +14,14 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -127,10 +130,12 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         getListView().setOnItemClickListener(this);
         this.showEnterJid = intent.getBooleanExtra(EXTRA_SHOW_ENTER_JID, false);
         this.binding.fab.setOnClickListener(this::onFabClicked);
+        this.binding.fab.setImageDrawable(Theme.getChooseContactAddFabIcon(this));
+        this.binding.fab.setBackgroundTintList(ColorStateList.valueOf(Theme.getChooseContactAddFabBackgroundColor(this)));
         if (this.showEnterJid) {
             this.binding.fab.show();
         } else {
-            binding.fab.setImageResource(R.drawable.ic_forward_white_24dp);
+            binding.fab.setImageDrawable(Theme.getChooseContactForwardFabIcon(this));
         }
 
         final SharedPreferences preferences = getPreferences();
@@ -154,7 +159,7 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         mode.setTitle(getTitleFromIntent());
-        binding.fab.setImageResource(R.drawable.ic_forward_white_24dp);
+        binding.fab.setImageDrawable(Theme.getChooseContactForwardFabIcon(this));
         binding.fab.show();
         final View view = getSearchEditText();
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -166,7 +171,7 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        this.binding.fab.setImageResource(R.drawable.ic_person_add_white_24dp);
+        this.binding.fab.setImageDrawable(Theme.getChooseContactAddFabIcon(this));
         if (this.showEnterJid) {
             this.binding.fab.show();
         } else {
@@ -215,9 +220,9 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
             try {
-                bar.setTitle(getTitleFromIntent());
+                bar.setTitle(Theme.getActionBarTitleSpan(this, this.getResources().getString(getTitleFromIntent())));
             } catch (Exception e) {
-                bar.setTitle(R.string.title_activity_choose_contact);
+                bar.setTitle(Theme.getActionBarTitleSpan(this, this.getResources().getString(R.string.title_activity_choose_contact)));
             }
         }
     }
@@ -235,8 +240,11 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         super.onCreateOptionsMenu(menu);
         final Intent i = getIntent();
         boolean showEnterJid = i != null && i.getBooleanExtra(EXTRA_SHOW_ENTER_JID, false);
-        menu.findItem(R.id.action_scan_qr_code).setVisible(isCameraFeatureAvailable() && showEnterJid);
+        MenuItem qrCode = menu.findItem(R.id.action_scan_qr_code);
+        qrCode.setVisible(isCameraFeatureAvailable() && showEnterJid);
+        qrCode.setIcon(Theme.getQrCodeScanIcon(this));
         MenuItem mMenuSearchView = menu.findItem(R.id.action_search);
+        mMenuSearchView.setIcon(Theme.getSearchActionIcon(this));
         if (startSearching) {
             mMenuSearchView.expandActionView();
         }

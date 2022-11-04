@@ -12,6 +12,7 @@ import android.view.View;
 import androidx.core.content.ContextCompat;
 
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.ui.Theme;
 
 public class UnreadCountCustomView extends View {
 
@@ -38,7 +39,7 @@ public class UnreadCountCustomView extends View {
 
     private void initXMLAttrs(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.UnreadCountCustomView);
-        setBackgroundColor(a.getColor(a.getIndex(0), ContextCompat.getColor(context, R.color.green700_desaturated)));
+        setBackgroundColor(Theme.getUnreadCountBackgroundColor(getContext()));
         a.recycle();
     }
 
@@ -47,7 +48,7 @@ public class UnreadCountCustomView extends View {
         paint.setColor(backgroundColor);
         paint.setAntiAlias(true);
         textPaint = new Paint();
-        textPaint.setColor(Color.WHITE);
+        textPaint.setColor(Theme.getUnreadCountTextColor(getContext()));
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setAntiAlias(true);
         textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
@@ -63,7 +64,6 @@ public class UnreadCountCustomView extends View {
         textPaint.setTextSize(0.95f * radius);
         canvas.drawCircle(midx, midy, radius * 0.94f, paint);
         canvas.drawText(unreadCount > 999 ? "\u221E" : String.valueOf(unreadCount), midx, midy + textOffset, textPaint);
-
     }
 
     public void setUnreadCount(int unreadCount) {

@@ -40,6 +40,7 @@ import android.text.Html;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +55,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
+<<<<<<< HEAD
+=======
+import androidx.core.graphics.drawable.DrawableCompat;
+>>>>>>> feature_customisable_theme
 import androidx.databinding.DataBindingUtil;
 
 import com.google.common.base.Strings;
@@ -423,10 +428,6 @@ public abstract class XmppActivity extends ActionBarActivity {
         return this.isCameraFeatureAvailable;
     }
 
-    public boolean isDarkTheme() {
-        return ThemeHelper.isDark(mTheme);
-    }
-
     public int getThemeResource(int r_attr_name, int r_drawable_def) {
         int[] attrs = {r_attr_name};
         TypedArray ta = this.getTheme().obtainStyledAttributes(attrs);
@@ -435,6 +436,28 @@ public abstract class XmppActivity extends ActionBarActivity {
         ta.recycle();
 
         return res;
+    }
+
+    // keeping old one above not to break anything
+    public int getThemeResource(int r_attr_name) {
+        TypedValue tvattr = new TypedValue();
+        this.getTheme().resolveAttribute(r_attr_name, tvattr, true);
+
+        return tvattr.resourceId;
+    }
+
+    public TypedValue getThemeResourceAttr(int r_attr_name) {
+        TypedValue tvattr = new TypedValue();
+        this.getTheme().resolveAttribute(r_attr_name, tvattr, true);
+
+        return tvattr;
+    }
+
+    public Drawable getTintedDrawable(int drawableResource, int colorResource, int colorResourceOnColored, boolean coloredBackground){
+        Drawable drawable = ContextCompat.getDrawable(this, this.getThemeResource(drawableResource));
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, this.getThemeResource(coloredBackground ? colorResourceOnColored : colorResource)));
+
+        return drawable;
     }
 
     protected boolean isOptimizingBattery() {

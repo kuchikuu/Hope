@@ -52,39 +52,69 @@ public class ThemeHelper {
 	public static int find(final Context context) {
 		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		final Resources resources = context.getResources();
-		final boolean dark = isDark(sharedPreferences, resources);
+		final String themeId = getThemeId(sharedPreferences, resources);
 		final String fontSize = sharedPreferences.getString("font_size", resources.getString(R.string.default_font_size));
 		switch (fontSize) {
 			case "medium":
-				return dark ? R.style.ConversationsTheme_Dark_Medium : R.style.ConversationsTheme_Medium;
+				switch (themeId) {
+					case "dark":
+						return R.style.ConversationsTheme_Dark_Medium;
+					case "black":
+						return R.style.ConversationsTheme_Black_Medium;
+					default:
+						return R.style.ConversationsTheme_Medium;
+				}
 			case "large":
-				return dark ? R.style.ConversationsTheme_Dark_Large : R.style.ConversationsTheme_Large;
+				switch (themeId) {
+					case "dark":
+						return R.style.ConversationsTheme_Dark_Large;
+					case "black":
+						return R.style.ConversationsTheme_Black_Large;
+					default:
+						return R.style.ConversationsTheme_Large;
+				}
 			default:
-				return dark ? R.style.ConversationsTheme_Dark : R.style.ConversationsTheme;
+				switch (themeId) {
+					case "dark":
+						return R.style.ConversationsTheme_Dark;
+					case "black":
+						return R.style.ConversationsTheme_Black;
+					default:
+						return R.style.ConversationsTheme;
+				}
 		}
 	}
 
 	public static int findDialog(Context context) {
 		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		final Resources resources = context.getResources();
-		final boolean dark = isDark(sharedPreferences, resources);
+		final String themeId = getThemeId(sharedPreferences, resources);
 		final String fontSize = sharedPreferences.getString("font_size", resources.getString(R.string.default_font_size));
 		switch (fontSize) {
 			case "medium":
-				return dark ? R.style.ConversationsTheme_Dark_Dialog_Medium : R.style.ConversationsTheme_Dialog_Medium;
+				switch (themeId) {
+					case "dark":
+					case "black":
+						return R.style.ConversationsTheme_Dark_Dialog_Medium;
+					default:
+						return R.style.ConversationsTheme_Dialog_Medium;
+				}
 			case "large":
-				return dark ? R.style.ConversationsTheme_Dark_Dialog_Large : R.style.ConversationsTheme_Dialog_Large;
+				switch (themeId) {
+					case "dark":
+					case "black":
+						return R.style.ConversationsTheme_Dark_Dialog_Large;
+					default:
+						return R.style.ConversationsTheme_Dialog_Large;
+				}
 			default:
-				return dark ? R.style.ConversationsTheme_Dark_Dialog : R.style.ConversationsTheme_Dialog;
-		}
-	}
-
-	private static boolean isDark(final SharedPreferences sharedPreferences, final Resources resources) {
-		final String setting = sharedPreferences.getString(SettingsActivity.THEME, resources.getString(R.string.theme));
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && "automatic".equals(setting)) {
-			return (resources.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-		} else {
-			return "dark".equals(setting);
+				switch (themeId) {
+					case "dark":
+					case "black":
+						return R.style.ConversationsTheme_Dark_Dialog;
+					default:
+						return R.style.ConversationsTheme_Dialog;
+				}
 		}
 	}
 
@@ -93,6 +123,20 @@ public class ThemeHelper {
 			case R.style.ConversationsTheme_Dark:
 			case R.style.ConversationsTheme_Dark_Large:
 			case R.style.ConversationsTheme_Dark_Medium:
+			case R.style.ConversationsTheme_Black:
+			case R.style.ConversationsTheme_Black_Large:
+			case R.style.ConversationsTheme_Black_Medium:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	public static boolean isBlack(@StyleRes int id) {
+		switch (id) {
+			case R.style.ConversationsTheme_Black:
+			case R.style.ConversationsTheme_Black_Large:
+			case R.style.ConversationsTheme_Black_Medium:
 				return true;
 			default:
 				return false;
@@ -115,6 +159,7 @@ public class ThemeHelper {
 		}
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Calculate pixels relative to density.
 	 *
@@ -125,5 +170,22 @@ public class ThemeHelper {
 	public static int dp2Px(Context context, int dp){
 		float scale = context.getResources().getDisplayMetrics().density;
 		return (int) (dp * scale + 0.5f);
+=======
+	private static String getThemeId(final SharedPreferences sharedPreferences, final Resources resources) {
+		String themeId = sharedPreferences.getString(SettingsActivity.THEME, resources.getString(R.string.theme));
+		if (themeId.equals("automatic")){
+			themeId = getAutoTheme(resources);
+		}
+		return themeId;
+	}
+
+	private static String getAutoTheme(final Resources resources){
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+			if ((resources.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES){
+				return "dark";
+			}
+		}
+		return "light";
+>>>>>>> feature_customisable_theme
 	}
 }

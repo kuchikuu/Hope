@@ -10,6 +10,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
             android:scrollbars="vertical"
+            android:scrollbarThumbVertical="?attr/scrollbar_color"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/color_background_primary"
@@ -17,7 +18,6 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
-            app:backgroundTint="?colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"

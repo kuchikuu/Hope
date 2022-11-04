@@ -8,6 +8,7 @@ import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -70,6 +71,7 @@ import eu.siacs.conversations.persistance.FileBackend;
 import eu.siacs.conversations.ui.ConversationsActivity;
 import eu.siacs.conversations.ui.EditAccountActivity;
 import eu.siacs.conversations.ui.RtpSessionActivity;
+import eu.siacs.conversations.ui.Theme;
 import eu.siacs.conversations.ui.TimePreference;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
@@ -805,7 +807,9 @@ public class NotificationService {
     }
 
     private void setNotificationColor(final Builder mBuilder) {
-        mBuilder.setColor(ContextCompat.getColor(mXmppConnectionService, R.color.green600));
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(mXmppConnectionService);
+        int color = p.getInt("custom_colorPrimaryInt", ContextCompat.getColor(mXmppConnectionService, R.color.green600));
+        mBuilder.setColor(color);
     }
 
     public void updateNotification() {
@@ -1193,7 +1197,7 @@ public class NotificationService {
                 final String lastMessageUuid = Iterables.getLast(messages).getUuid();
                 final NotificationCompat.Action replyAction =
                         new NotificationCompat.Action.Builder(
-                                        R.drawable.ic_send_text_offline,
+                                        R.drawable.ic_send_text_online,
                                         replyLabel,
                                         createReplyIntent(conversation, lastMessageUuid, false))
                                 .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)

@@ -14,8 +14,12 @@ resolutions = {
 	}
 
 images = {
+<<<<<<< HEAD
     'message_bubble_sent.svg' => ['message_bubble_sent.9', 0],
     'message_bubble_sent_grey.svg' => ['message_bubble_sent_grey.9', 0],
+=======
+    'message_bubble_sent_grey_outline.svg' => ['message_bubble_sent_grey_outline.9', 0],
+>>>>>>> feature_customisable_theme
 	}
 
 # Executable paths for Mac OSX

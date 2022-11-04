@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -1205,6 +1206,21 @@ public class ConversationFragment extends XmppFragment
                 menuTogglePinned.setTitle(R.string.add_to_favorites);
             }
         }
+
+        // add tinted icons to items with icons
+        menuCall.setIcon(Theme.getCallIcon(activity));
+        menuOngoingCall.setIcon(Theme.getOngoingCallIcon(activity));
+        menuMucDetails.setIcon(Theme.getMucDetailsIcon(activity));
+
+        // must be placed after ConversationMenuConfigurator methods
+        // so that we don't have to replicate its logics in Theme.java (TODO?)
+        final MenuItem menuSecure = menu.findItem(R.id.action_security);
+        Drawable tintedSecureIcon = Theme.getTintedActionBarIconDrawable(activity, menuSecure.getIcon());
+        menuSecure.setIcon(tintedSecureIcon);
+        final MenuItem menuAttach = menu.findItem(R.id.action_attach_file);
+        Drawable tintedAttachFileIcon = Theme.getTintedActionBarIconDrawable(activity, menuAttach.getIcon());
+        menuAttach.setIcon(tintedAttachFileIcon);
+
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
@@ -1238,6 +1254,11 @@ public class ConversationFragment extends XmppFragment
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.binding.textinput.setCustomInsertionActionModeCallback(
                     new EditMessageActionModeCallback(this.binding.textinput));
+        }
+
+        // programmatically themed scrollbar colours depend on:
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            binding.messagesView.setVerticalScrollbarThumbDrawable(Theme.getVerticalScrollbarColorDrawable(activity));
         }
 
         return binding.getRoot();
@@ -2089,6 +2110,11 @@ public class ConversationFragment extends XmppFragment
     public void onResume() {
         super.onResume();
         binding.messagesView.post(this::fireReadEvent);
+
+        // programmatically themed scrollbar colours depend on:
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            binding.messagesView.setVerticalScrollbarThumbDrawable(Theme.getVerticalScrollbarColorDrawable(activity));
+        }
     }
 
     private void fireReadEvent() {
@@ -2929,7 +2955,7 @@ public class ConversationFragment extends XmppFragment
         this.binding.textSendButton.setTag(action);
         final Activity activity = getActivity();
         if (activity != null) {
-            this.binding.textSendButton.setImageResource(
+            this.binding.textSendButton.setImageDrawable(
                     SendButtonTool.getSendButtonImageResource(activity, action, status));
         }
     }

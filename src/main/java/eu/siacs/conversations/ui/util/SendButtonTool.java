@@ -31,13 +31,18 @@ package eu.siacs.conversations.ui.util;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.util.TypedValue;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.ui.ConversationFragment;
+import eu.siacs.conversations.ui.Theme;
 import eu.siacs.conversations.utils.UIHelper;
 
 public class SendButtonTool {
@@ -80,111 +85,24 @@ public class SendButtonTool {
 		}
 	}
 
-	public static int getSendButtonImageResource(Activity activity, SendButtonAction action, Presence.Status status) {
+	public static Drawable getSendButtonImageResource(Activity activity, SendButtonAction action, Presence.Status status) {
+		Drawable button = Theme.getDefaultSendButton(activity);
 		switch (action) {
 			case TEXT:
-				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_text_online;
-					case AWAY:
-						return R.drawable.ic_send_text_away;
-					case XA:
-					case DND:
-						return R.drawable.ic_send_text_dnd;
-					default:
-						return getThemeResource(activity, R.attr.ic_send_text_offline, R.drawable.ic_send_text_offline);
-				}
+				return Theme.getSendTextButton(activity, status);
 			case RECORD_VIDEO:
-				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_videocam_online;
-					case AWAY:
-						return R.drawable.ic_send_videocam_away;
-					case XA:
-					case DND:
-						return R.drawable.ic_send_videocam_dnd;
-					default:
-						return getThemeResource(activity, R.attr.ic_send_videocam_offline, R.drawable.ic_send_videocam_offline);
-				}
+				return Theme.getSendVideoButton(activity, status);
 			case TAKE_PHOTO:
-				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_photo_online;
-					case AWAY:
-						return R.drawable.ic_send_photo_away;
-					case XA:
-					case DND:
-						return R.drawable.ic_send_photo_dnd;
-					default:
-						return getThemeResource(activity, R.attr.ic_send_photo_offline, R.drawable.ic_send_photo_offline);
-				}
+				return Theme.getSendPhotoButton(activity, status);
 			case RECORD_VOICE:
-				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_voice_online;
-					case AWAY:
-						return R.drawable.ic_send_voice_away;
-					case XA:
-					case DND:
-						return R.drawable.ic_send_voice_dnd;
-					default:
-						return getThemeResource(activity, R.attr.ic_send_voice_offline, R.drawable.ic_send_voice_offline);
-				}
+				return Theme.getSendVoiceButton(activity, status);
 			case SEND_LOCATION:
-				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_location_online;
-					case AWAY:
-						return R.drawable.ic_send_location_away;
-					case XA:
-					case DND:
-						return R.drawable.ic_send_location_dnd;
-					default:
-						return getThemeResource(activity, R.attr.ic_send_location_offline, R.drawable.ic_send_location_offline);
-				}
+				return Theme.getSendLocationButton(activity, status);
 			case CANCEL:
-				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_cancel_online;
-					case AWAY:
-						return R.drawable.ic_send_cancel_away;
-					case XA:
-					case DND:
-						return R.drawable.ic_send_cancel_dnd;
-					default:
-						return getThemeResource(activity, R.attr.ic_send_cancel_offline, R.drawable.ic_send_cancel_offline);
-				}
+				return Theme.getCancelSending(activity, status);
 			case CHOOSE_PICTURE:
-				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_picture_online;
-					case AWAY:
-						return R.drawable.ic_send_picture_away;
-					case XA:
-					case DND:
-						return R.drawable.ic_send_picture_dnd;
-					default:
-						return getThemeResource(activity, R.attr.ic_send_picture_offline, R.drawable.ic_send_picture_offline);
-				}
+				return Theme.getSendPictureButton(activity, status);
 		}
-		return getThemeResource(activity, R.attr.ic_send_text_offline, R.drawable.ic_send_text_offline);
+		return button;
 	}
-
-	private static int getThemeResource(Activity activity, int r_attr_name, int r_drawable_def) {
-		int[] attrs = {r_attr_name};
-		TypedArray ta = activity.getTheme().obtainStyledAttributes(attrs);
-
-		int res = ta.getResourceId(0, r_drawable_def);
-		ta.recycle();
-
-		return res;
-	}
-
 }
