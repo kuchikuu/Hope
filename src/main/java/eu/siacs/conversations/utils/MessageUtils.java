@@ -64,12 +64,7 @@ public class MessageUtils {
             }	
             body = "*" + nick + " " + message.getBody().substring(Message.ME_COMMAND.length()) +"*";
         } else {
-		if(message.isFileOrImage()){
-            		body = quotee + " sent: \n" + message.getMergedBody().toString();
-		}else
-		{
-            		body = quotee + " wrote: \n" + message.getMergedBody().toString();
-		};
+         	body = quotee + " wrote: \n" + message.getMergedBody().toString();
         }
         for (String line : body.split("\n")) {
             if (!(line.length() <= 0) && QuoteHelper.isNestedTooDeeply(line)) {

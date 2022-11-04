@@ -1291,7 +1291,9 @@ public class ConversationFragment extends XmppFragment
         String filesize = params.size != null ? UIHelper.filesizeToString(params.size) : null;
 
         String text =
-                MimeUtils.getMimeTypeEmoji(getActivity(), message.getMimeType()) + " _"
+		UIHelper.getMessageDisplayName(message)
+		+ " sent:\n"
+                + MimeUtils.getMimeTypeEmoji(getActivity(), message.getMimeType()) + " _"
                 + filesize + "; "
                 + UIHelper.readableTimeDifference(getActivity(), message.getTimeSent(), true, true)
                 + "_";
@@ -1300,7 +1302,9 @@ public class ConversationFragment extends XmppFragment
 
     private void quoteGeoUri(Message message) {
         String text =
-                "\uD83D\uDCCD" // globe with meridians emoji
+		UIHelper.getMessageDisplayName(message)
+		+ " sent:\n"
+                + "\uD83D\uDCCD" // globe with meridians emoji
                 + " _"
                 + UIHelper.readableTimeDifference(getActivity(), message.getTimeSent(), true, true)
                 + "_";
