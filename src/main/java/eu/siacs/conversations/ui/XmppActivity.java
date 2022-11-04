@@ -22,8 +22,10 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.AnimatedImageDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -51,6 +53,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.common.base.Strings;
@@ -878,16 +881,31 @@ public abstract class XmppActivity extends ActionBarActivity {
     }
 
     public void loadBitmap(Message message, ImageView imageView) {
-        Bitmap bm;
+        Drawable bm;
         try {
-            bm = xmppConnectionService.getFileBackend().getThumbnail(message, (int) (metrics.density * 288), true);
+            bm = xmppConnectionService.getFileBackend().getThumbnail(message, getResources(), (int) (metrics.density * 288), true);
         } catch (IOException e) {
             bm = null;
         }
         if (bm != null) {
             cancelPotentialWork(message, imageView);
-            imageView.setImageBitmap(bm);
             imageView.setBackgroundColor(0x00000000);
+
+            if (Build.VERSION.SDK_INT >= 28 && bm instanceof AnimatedImageDrawable) {
+                SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(imageView.getContext());
+                if (p.getBoolean("animate_gifs", true)) {
+                    imageView.setImageDrawable(bm);
+                    ((AnimatedImageDrawable) bm).start();
+                } else {
+                    ((AnimatedImageDrawable) bm).stop();
+                    bm.setLevel(0);
+                    // set "GIF" overlay to foreground layer
+                    LayerDrawable GIFed = new LayerDrawable(new Drawable[] {bm, ContextCompat.getDrawable(imageView.getContext(), R.drawable.play_gif_black)});
+                    imageView.setImageDrawable(GIFed);
+                }
+            } else {
+                imageView.setImageDrawable(bm);
+            }
         } else {
             if (cancelPotentialWork(message, imageView)) {
                 imageView.setBackgroundColor(0xff333333);
@@ -941,7 +959,7 @@ public abstract class XmppActivity extends ActionBarActivity {
         }
     }
 
-    static class BitmapWorkerTask extends AsyncTask<Message, Void, Bitmap> {
+    static class BitmapWorkerTask extends AsyncTask<Message, Void, Drawable> {
         private final WeakReference<ImageView> imageViewReference;
         private Message message = null;
 
@@ -950,7 +968,7 @@ public abstract class XmppActivity extends ActionBarActivity {
         }
 
         @Override
-        protected Bitmap doInBackground(Message... params) {
+        protected Drawable doInBackground(Message... params) {
             if (isCancelled()) {
                 return null;
             }
@@ -958,7 +976,7 @@ public abstract class XmppActivity extends ActionBarActivity {
             try {
                 final XmppActivity activity = find(imageViewReference);
                 if (activity != null && activity.xmppConnectionService != null) {
-                    return activity.xmppConnectionService.getFileBackend().getThumbnail(message, (int) (activity.metrics.density * 288), false);
+                    return activity.xmppConnectionService.getFileBackend().getThumbnail(message, imageViewReference.get().getContext().getResources(), (int) (activity.metrics.density * 288), false);
                 } else {
                     return null;
                 }
@@ -968,12 +986,27 @@ public abstract class XmppActivity extends ActionBarActivity {
         }
 
         @Override
-        protected void onPostExecute(final Bitmap bitmap) {
+        protected void onPostExecute(final Drawable drawable) {
             if (!isCancelled()) {
                 final ImageView imageView = imageViewReference.get();
                 if (imageView != null) {
-                    imageView.setImageBitmap(bitmap);
-                    imageView.setBackgroundColor(bitmap == null ? 0xff333333 : 0x00000000);
+                    imageView.setBackgroundColor(drawable == null ? 0xff333333 : 0x00000000);
+
+                    if (Build.VERSION.SDK_INT >= 28 && drawable instanceof AnimatedImageDrawable) {
+                        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(imageView.getContext());
+                        if (p.getBoolean("animate_gifs", true)) {
+                            imageView.setImageDrawable(drawable);
+                            ((AnimatedImageDrawable) drawable).start();
+                        } else {
+                            ((AnimatedImageDrawable) drawable).stop();
+                            drawable.setLevel(0);
+                            // set "GIF" overlay to foreground layer
+                            LayerDrawable GIFed = new LayerDrawable(new Drawable[] {drawable, ContextCompat.getDrawable(imageView.getContext(), R.drawable.play_gif_black)});
+                            imageView.setImageDrawable(GIFed);
+                        }
+                    } else {
+                        imageView.setImageDrawable(drawable);
+                    }
                 }
             }
         }
