@@ -31,6 +31,14 @@ package eu.siacs.conversations.utils;
 
 import com.google.common.base.Strings;
 
+// These 5 below added but not used because I don't know how to get context
+//TODO: Get context X_X
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import eu.siacs.conversations.R;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Pattern;
@@ -61,7 +69,7 @@ public class MessageUtils {
                 }
             } else {
                 nick = UIHelper.getMessageDisplayName(message);
-            }	
+            }
             body = "*" + nick + " " + message.getBody().substring(Message.ME_COMMAND.length()) +"*";
         } else {
          	body = quotee + " wrote: \n" + message.getMergedBody().toString();
@@ -78,7 +86,6 @@ public class MessageUtils {
         return builder.toString();
     }
 
-
     public static boolean treatAsDownloadable(final String body, final boolean oob) {
         final String[] lines = body.split("\n");
         if (lines.length == 0) {
@@ -89,6 +96,26 @@ public class MessageUtils {
                 return false;
             }
         }
+
+        //TODO: Menu is ready. property is ready. Just make this IF work and we're golden.
+        //SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context????);
+        //if (p.getBoolean("in_chat_picture_preview_from_URL", context????.getResources().getBoolean(R.bool.in_chat_picture_preview_from_URL))) {
+            if(lines.length == 1){
+        			if(lines[0].toLowerCase().matches("http.?://.*/.*\\.png")){
+        					return true;
+        			}
+        			if(lines[0].toLowerCase().matches("http.?://.*/.*\\.jpg")){
+        					return true;
+        			}
+        			if(lines[0].toLowerCase().matches("http.?://.*/.*\\.gif")){
+        					return true;
+        			}
+        			if(lines[0].toLowerCase().matches("http.?://.*/.*\\.webp")){
+        					return true;
+        			}
+    		    }
+        //}
+
         final URI uri;
         try {
             uri = new URI(lines[0]);

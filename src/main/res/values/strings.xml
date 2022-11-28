@@ -719,6 +719,9 @@
     <string name="create_shortcut">Create Shortcut</string>
     <string name="pref_font_size">Font Size</string>
     <string name="pref_font_size_summary">The relative font size used within the app.</string>
+    <string name="chat">Chat</string>
+    <string name="pref_in_chat_picture_preview_from_URL">Display photos from external URLs</string>
+    <string name="pref_in_chat_picture_preview_from_URL_summary">Fetch photos from links that point to an image (Potential security risk! May leak IP!)</string>
     <string name="default_on">On by default</string>
     <string name="default_off">Off by default</string>
     <string name="small">Small</string>

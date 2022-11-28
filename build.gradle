@@ -93,8 +93,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 42038
-        versionName "2.10.10"
+        versionCode 42039
+        versionName "2.10.11"
         archivesBaseName += "-$versionName"
         applicationId "pl.kuchikuu.hope"
         resValue "string", "applicationId", applicationId

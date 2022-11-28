@@ -204,6 +204,15 @@
             android:title="@string/pref_font_size" />
     </PreferenceCategory>
     <PreferenceCategory
+        android:key="Chat"
+        android:title="@string/chat">
+        <CheckBoxPreference
+            android:defaultValue="@bool/in_chat_picture_preview_from_URL"
+            android:key="in_chat_picture_preview_from_URL"
+            android:summary="@string/pref_in_chat_picture_preview_from_URL_summary"
+            android:title="@string/pref_in_chat_picture_preview_from_URL" />
+    </PreferenceCategory>
+    <PreferenceCategory
         android:key="backup_category"
         android:title="@string/backup">
         <Preference
